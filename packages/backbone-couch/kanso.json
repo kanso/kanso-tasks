@@ -1,0 +1,24 @@
+{
+  "name": "backbone-couch",
+  "version": "0.0.1",
+  "categories": [
+    "utils",
+    "couchdb"
+  ],
+  "maintainers": [
+    {
+      "name": "Mike Wallace",
+      "url": "https://github.com/mikewallace1979"
+    }
+  ],
+  "url": "https://github.com/andrzejsliwa/backbone-couch",
+  "modules": [
+    "backbone-couch.js"
+  ],
+  "modules_attachment": false,
+  "dependencies": {
+    "modules": ">=0.0.8",
+    "backbone": ">=0.5.3"
+  },
+  "description": "CouchDB connector for Backbone.js."
+}

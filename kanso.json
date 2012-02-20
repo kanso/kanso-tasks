@@ -1,0 +1,21 @@
+{
+    "name": "kanso-tasks",
+    "description": "Todo List CouchApp",
+    "version": "0.0.1",
+    "load": "ddoc/ddoc",
+    "attachments": ["static", "index.html"],
+    "modules": ["ddoc", "ui"],
+    "handlebars": {
+        "templates": "templates"
+    },
+    "dependencies": {
+        "backbone": null,
+        "backbone-couch": null,
+        "handlebars": null,
+        "handlebars-helpers": null,
+        "attachments": null,
+        "modules": null,
+        "properties": null,
+        "kanso-topbar": null
+    }
+}

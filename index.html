@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="kanso-topbar/topbar.css" />
+    <link rel="stylesheet" type="text/css" href="static/css/todo.css" />
+    <title>Todo</title>
+  </head>
+  <body>
+    <div id="kanso-topbar">
+      <div class="appname">Todo</div>
+      <ul>
+        <li class="active"><a href="#">Lists</a></li>
+        <li><a href="#">Help</a></li>
+      </ul>
+    </div>
+    <div id="content" class="row">
+      <div id="sidebar" class="span4"></div>
+      <div id="main" class="span12"></div>
+    </div>
+    <script src="modules.js"></script>
+    <script>
+      require('ui/app').init();
+    </script>
+  </body>
+</html>
