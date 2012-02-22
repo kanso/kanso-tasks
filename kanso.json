@@ -3,10 +3,13 @@
     "description": "Todo List CouchApp",
     "version": "0.0.1",
     "load": "ddoc/ddoc",
-    "attachments": ["static", "index.html"],
+    "attachments": ["index.html"],
     "modules": ["ddoc", "ui"],
     "handlebars": {
         "templates": "templates"
+    },
+    "less": {
+        "compile": "css/tasks.less"
     },
     "dependencies": {
         "backbone": null,
@@ -16,6 +19,8 @@
         "attachments": null,
         "modules": null,
         "properties": null,
-        "kanso-topbar": null
+        "kanso-topbar": null,
+        "bootstrap-less": null,
+        "less-precompiler": null
     }
 }
