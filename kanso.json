@@ -13,7 +13,7 @@
     },
     "dependencies": {
         "backbone": null,
-        "backbone-couch": null,
+        "backbone-adapter": null,
         "handlebars": null,
         "handlebars-helpers": null,
         "attachments": null,

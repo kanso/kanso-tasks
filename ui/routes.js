@@ -11,6 +11,7 @@ exports.WorkspaceRouter = Backbone.Router.extend({
         $('#content').text('help');
     },
     home: function() {
-        var listview = new views.ListView();
+        var appview = new views.AppView();
+        appview.showList();
     }
 });

@@ -1,3 +1,4 @@
 module.exports = {
-    rewrites: require('./rewrites')
+    rewrites: require('./rewrites'),
+    views: require('./views')
 };
