@@ -44,7 +44,7 @@ exports.ListView = Backbone.View.extend({
     },
     addOne: function (task) {
         var view = new exports.TaskView({model: task});
-        this.$('.tasks').append(view.render().el);
+        this.$('.task-table tbody').append(view.render().el);
     },
     addAll: function () {
         this.tasks.each(_.bind(this.addOne, this));
@@ -63,7 +63,7 @@ exports.ListView = Backbone.View.extend({
 });
 
 exports.TaskView = Backbone.View.extend({
-    tagName: 'li',
+    tagName: 'tr',
     template: templates['task.html'],
     events: {
         'click .check': 'toggleDone'
