@@ -5,6 +5,7 @@ exports.Task = Backbone.Model.extend({
     type: 'task',
     defaults: function () {
         return {
+            type: 'task',
             complete: false
         };
     },

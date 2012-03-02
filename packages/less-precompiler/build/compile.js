@@ -3,6 +3,7 @@ var less = require('less'),
     utils = require('kanso-utils/utils'),
     spawn = require('child_process').spawn,
     attachments = require('kanso-utils/attachments'),
+    fs = require('fs'),
     path = require('path');
 
 

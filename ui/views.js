@@ -24,8 +24,13 @@ exports.ListView = Backbone.View.extend({
     tagName: 'div',
     className: 'list',
     template: templates['list.html'],
+    events: {
+        'keypress #new-task': 'createOnEnter'
+    },
     initialize: function () {
         $(this.el).html(this.template({}));
+        this.input = this.$('#new-task');
+
         this.tasks = new collections.TaskList;
         this.tasks.bind('add',   this.addOne, this);
         this.tasks.bind('reset', this.addAll, this);
@@ -46,6 +51,14 @@ exports.ListView = Backbone.View.extend({
     },
     error: function (err) {
         console.error(err);
+    },
+    createOnEnter: function (ev) {
+        var text = this.input.val();
+        if (!text || ev.keyCode != 13) {
+            return;
+        }
+        this.tasks.create({text: text});
+        this.input.val('');
     }
 });
 
@@ -56,8 +69,12 @@ exports.TaskView = Backbone.View.extend({
         'click .check': 'toggleDone'
     },
     initialize: function () {
+        this.model.bind('error', this.error, this);
         this.model.bind('change', this.render, this);
         this.model.bind('destroy', this.remove, this);
+    },
+    error: function (err) {
+        console.log(['task error', this.el, err]);
     },
     render: function () {
         $(this.el).html(

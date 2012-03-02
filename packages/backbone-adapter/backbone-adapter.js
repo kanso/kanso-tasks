@@ -4,7 +4,7 @@ var db = require('db'),
 
 
 exports.find = function (db, model, callback) {
-    db.getDoc(model._id, callback);
+    db.getDoc(model.attributes._id, callback);
 };
 
 exports.findAll = function (db, model, callback) {
@@ -36,18 +36,21 @@ exports.findAll = function (db, model, callback) {
 };
 
 exports.save = function (db, model, callback) {
-    db.saveDoc(model, function (err, resp) {
+    if (!model.attributes.type) {
+        return callback(new Error('No type property defined'));
+    }
+    db.saveDoc(model.attributes, function (err, resp) {
         if (err) {
             return callback(err);
         }
-        model._id = resp.id;
-        model._rev = resp.rev;
+        model.attributes._id = resp.id;
+        model.attributes._rev = resp.rev;
         callback(null, model);
     });
 };
 
 exports.remove = function (db, model, callback) {
-    db.removeDoc(model, function (err) {
+    db.removeDoc(model.attributes, function (err) {
         callback(err, model);
     });
 };
@@ -67,7 +70,7 @@ exports.sync = function (method, model, options) {
             return options.error(err);
         }
         var args = Array.prototype.slice.call(arguments, 1);
-        options.success.apply(options, args);
+        options.success.apply(model, args);
     };
     if (!db_url) {
         return callback(

@@ -2,7 +2,7 @@
 @import "bootstrap/reset.less";
 
 // Core variables and mixins
-@import "bootstrap/variables.less"; // Modify this for custom colors, font-sizes, etc
+@import "variables.less"; // Modify this for custom colors, font-sizes, etc
 @import "bootstrap/mixins.less";
 
 // Grid system and page structure
@@ -50,3 +50,46 @@
 
 // Utility classes
 @import "bootstrap/utilities.less"; // Has to be last to override when necessary
+
+#sidebar {
+    min-height: 20px;
+    padding: 16px 0;
+    background-color: #f5f5f5;
+    border-right: 1px solid #eee;
+    border-right: 1px solid rgba(0,0,0,.05);
+    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    .box-shadow(inset 0 1px 1px rgba(0,0,0,.05));
+    .border-radius(0 0 4px 0);
+}
+
+#main .nav-pills {
+    margin-top: 1em;
+}
+
+.addtask {
+    min-height: 20px;
+    padding: 16px 16px 8px 16px;
+    background-color: #f5f5f5;
+    border: 1px solid #eee;
+    border: 1px solid rgba(0,0,0,.05);
+    .box-shadow(inset 0 1px 1px rgba(0,0,0,.05));
+    .border-radius(4px);
+    margin-bottom: 20px;
+}
+
+.tasks {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px dotted #ccc;
+}
+.tasks li {
+    margin: 0;
+    padding: 8px 16px;
+    border-bottom: 1px dotted #ccc;
+    border-left: 4px solid #ccc;
+}
+.tasks li .taskcheck {
+    margin-right: 1em;
+}
