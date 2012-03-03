@@ -7,16 +7,26 @@
     <title>Kanso Tasks</title>
   </head>
   <body>
+
     <div id="kanso-topbar">
       <div class="appname">Kanso Tasks</div>
     </div>
+
     <div id="content" class="row">
       <div id="sidebar" class="span4"></div>
       <div id="main" class="span12"></div>
     </div>
+
     <script src="modules.js"></script>
+    <script>
+      // so the bootstrap plugins work
+      window.$ = window.jQuery = require('jquery');
+    </script>
+    <script src="bootstrap/js/bootstrap-tooltip.js"></script>
     <script>
       require('ui/app').init();
     </script>
+    <script src="vendor/date.js"></script>
+
   </body>
 </html>
