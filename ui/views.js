@@ -31,25 +31,8 @@ exports.ListView = Backbone.View.extend({
         'blur #new-task': 'hideTip',
         'click .handle': 'toggleActions',
         'mouseover .handle': 'peekActions',
-        'mouseout .handle': 'unpeekActions'
-    },
-    peekActions: function () {
-        if (this.$('.selection-actions').hasClass('closed')) {
-            this.$('.selection-actions .handle').addClass('peek');
-        }
-        else {
-            this.unpeekActions();
-        }
-    },
-    unpeekActions: function () {
-        this.$('.selection-actions .handle').removeClass('peek');
-    },
-    selectSingleRow: function (el) {
-        var trs = $(el).siblings('tr');
-        $('.select input', trs).attr({checked: null});
-        trs.removeClass('selected');
-        $(el).addClass('selected');
-        $('.select input', el).attr({checked: 'checked'});
+        'mouseout .handle': 'unpeekActions',
+        'click tr .select input': 'checkSelection'
     },
     initialize: function () {
         $(this.el).html(this.template({}));
@@ -71,7 +54,8 @@ exports.ListView = Backbone.View.extend({
                 // don't interfere with input element events
                 return;
             }
-            view.selectSingleRow(this);
+            view.toggleSingleRow(this);
+            view.checkSelection();
         });
     },
     render: function () {
@@ -144,11 +128,51 @@ exports.ListView = Backbone.View.extend({
             this.showTip('Hit ENTER to add this task');
         }
     },
+    peekActions: function () {
+        if (this.$('.selection-actions').hasClass('closed')) {
+            this.$('.selection-actions .handle').addClass('peek');
+        }
+        else {
+            this.unpeekActions();
+        }
+    },
+    unpeekActions: function () {
+        this.$('.selection-actions .handle').removeClass('peek');
+    },
+    toggleSingleRow: function (el) {
+        var trs = $(el).siblings('tr');
+        var checked = $('.select input', el).is(':checked');
+        var others_checked = !!($('.select input:checked', trs).length);
+
+        $('.select input', trs).attr({checked: null});
+        trs.removeClass('selected');
+
+        if (!checked || others_checked) {
+            $(el).addClass('selected');
+            $('.select input', el).attr({checked: 'checked'});
+        }
+        else {
+            $(el).removeClass('selected');
+            $('.select input', el).attr({checked: null});
+        }
+    },
     restartTimer: function () {
         if (this.timer) {
             clearTimeout(this.timer);
         }
         this.timer = setTimeout(_.bind(this.nextTip, this), 1500);
+    },
+    checkSelection: function () {
+        //count selected
+        //check if hovering over
+        //check if manually opened?
+        var els = this.$('.task-table :checked');
+        if (els.length) {
+            this.showActions();
+        }
+        else {
+            this.hideActions();
+        }
     },
     createOnEnter: function (ev) {
         var text = this.input.val();
