@@ -1,3 +1,6 @@
+var _ = require('underscore');
+
+
 exports.trim = function (str) {
     return str.replace(/^\s+/, '').replace(/\s+$/, '');
 };
@@ -38,4 +41,40 @@ exports.parseTask = function (str) {
         priority: priority,
         description: description
     };
+};
+
+
+/**
+ * Requires Date.js library
+ * http://datejs.com
+ */
+
+exports.prettyPrintDate = function (d) {
+    if (!d) {
+        return '';
+    }
+    if (!_.isDate(d)) {
+        d = new Date(d);
+    }
+    var today = Date.today();
+    var yesterday = today.clone().add({days: -1});
+    var tomorrow  = today.clone().add({days: 1});
+    var next_week = today.clone().add({weeks: 1});
+
+    if (d < today && d >= yesterday) {
+        return 'Yesterday';
+    }
+    if (d >= today && d < tomorrow) {
+        return 'Today';
+    }
+    if (d >= tomorrow && d < tomorrow.clone().add({days: 1})) {
+        return 'Tomorrow';
+    }
+    if (d >= today && d < next_week) {
+        return d.toString('ddd');
+    }
+    if (d.toString('yyyy') === today.toString('yyyy')) {
+        return d.toString('MMM dd');
+    }
+    return d.toString('d');
 };

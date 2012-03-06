@@ -26,7 +26,30 @@ exports.ListView = Backbone.View.extend({
     className: 'list',
     template: templates['list.html'],
     events: {
-        'keyup #new-task': 'createOnEnter'
+        'keyup #new-task': 'createOnEnter',
+        'focus #new-task': 'restartTimer', // setup timer again on focus
+        'blur #new-task': 'hideTip',
+        'click .handle': 'toggleActions',
+        'mouseover .handle': 'peekActions',
+        'mouseout .handle': 'unpeekActions'
+    },
+    peekActions: function () {
+        if (this.$('.selection-actions').hasClass('closed')) {
+            this.$('.selection-actions .handle').addClass('peek');
+        }
+        else {
+            this.unpeekActions();
+        }
+    },
+    unpeekActions: function () {
+        this.$('.selection-actions .handle').removeClass('peek');
+    },
+    selectSingleRow: function (el) {
+        var trs = $(el).siblings('tr');
+        $('.select input', trs).attr({checked: null});
+        trs.removeClass('selected');
+        $(el).addClass('selected');
+        $('.select input', el).attr({checked: 'checked'});
     },
     initialize: function () {
         $(this.el).html(this.template({}));
@@ -42,16 +65,13 @@ exports.ListView = Backbone.View.extend({
         // when clicking on a task, deselect all others and then
         // select targetted task row
 
+        var view = this;
         this.$('.task-table tr').live('click', function (ev) {
             if (ev.target.tagName === 'INPUT') {
                 // don't interfere with input element events
                 return;
             }
-            var trs = $(this).siblings('tr');
-            $('.select input', trs).attr({checked: null});
-            trs.removeClass('selected');
-            $(this).addClass('selected');
-            $('.select input', this).attr({checked: 'checked'});
+            view.selectSingleRow(this);
         });
     },
     render: function () {
@@ -67,6 +87,22 @@ exports.ListView = Backbone.View.extend({
     },
     error: function (err) {
         console.error(err);
+    },
+    showActions: function () {
+        this.$('.selection-actions').removeClass('closed');
+        this.$('.handle-label').text('HIDE');
+    },
+    hideActions: function () {
+        this.$('.selection-actions').addClass('closed');
+        this.$('.handle-label').text('MORE');
+    },
+    toggleActions: function () {
+        if (this.$('.selection-actions').hasClass('closed')) {
+            this.showActions();
+        }
+        else {
+            this.hideActions();
+        }
     },
     hideTip: function () {
         if ($(this.input).data('tooltip')) {
@@ -89,7 +125,13 @@ exports.ListView = Backbone.View.extend({
         tooltip.show();
     },
     nextTip: function () {
-        var task = utils.parseTask($(this.input).val());
+        var val = $(this.input).val();
+        if (!val || !$(this.input).is(':focus')) {
+            // don't show tip if input doesn't have focus
+            // or there's no text entered
+            return;
+        }
+        var task = utils.parseTask(val);
         if (!task.due) {
             this.showTip(
                 'You can add a date too! eg. "Tomorrow", "25th April"'
@@ -101,6 +143,12 @@ exports.ListView = Backbone.View.extend({
         else {
             this.showTip('Hit ENTER to add this task');
         }
+    },
+    restartTimer: function () {
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+        this.timer = setTimeout(_.bind(this.nextTip, this), 1500);
     },
     createOnEnter: function (ev) {
         var text = this.input.val();
@@ -118,11 +166,8 @@ exports.ListView = Backbone.View.extend({
             }
             // this avoids arrow keys etc from making tooltips flicker
             if (text !== this.prev_text) {
-                if (this.timer) {
-                    clearTimeout(this.timer);
-                }
                 this.hideTip();
-                this.timer = setTimeout(_.bind(this.nextTip, this), 1500);
+                this.restartTimer();
             }
         }
         else {
@@ -153,7 +198,12 @@ exports.TaskView = Backbone.View.extend({
     },
     render: function () {
         var el = this.el;
-        $(el).html(this.template(this.model.attributes));
+        $(el).html(
+            this.template(_.extend(
+                { due_pp: this.model.due_pp() },
+                this.model.attributes
+            ))
+        );
         this.setText();
         this.$('.select input').change(function (ev) {
             if (this.checked) {

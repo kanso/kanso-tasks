@@ -1,4 +1,5 @@
-var Backbone = require('backbone');
+var Backbone = require('backbone'),
+    utils = require('./utils');
 
 
 exports.Task = Backbone.Model.extend({
@@ -11,5 +12,8 @@ exports.Task = Backbone.Model.extend({
     },
     toggle: function () {
         this.save({complete: !this.get("complete")})
+    },
+    due_pp: function () {
+        return utils.prettyPrintDate(this.get("due"));
     }
 });

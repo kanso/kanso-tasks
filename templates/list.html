@@ -1,61 +1,44 @@
-<!--
 <div class="list-controls">
-  <div class="sort-btn btn-group">
-    <a href="#" class="btn">Priority</a>
-    <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
-      <span class="caret"></span>
-    </a>
-    <ul class="dropdown-menu">
-      <li>Due date</li>
-      <li>Date added</li>
-      <li>Alphabetical</li>
-    </ul>
+  <div class="add-task">
+    <input type="text" id="new-task" name="new-task" placeholder="Add task" />
   </div>
-  <a class="admin-btn btn" href="#"><i class="icon-cog"></i> Admin</a>
-</div>
-
-<ul class="nav nav-pills">
-  <li class="active"><a href="#"><i class="icon-white icon-list"></i> Incomplete</a></li>
-  <li><a href="#"><i class="icon-warning-sign"></i> Overdue</a></li>
-  <li><a href="#"><i class="icon-time"></i> Due today</a></li>
-  <li><a href="#"><i class="icon-time"></i> Due 7 days</a></li>
-  <li><a href="#"><i class="icon-ok-sign"></i> Completed</a></li>
-</ul>
--->
-
-<div class="addtask">
-  <input type="text" id="new-task" name="new-task" placeholder="Add task" />
-</div>
-
-<table class="task-table">
-  <!--
-  <thead>
-    <tr>
-      <th class="check">
-        <input type="checkbox" />
-      </th>
-      <th class="actions hidden">
+  <div class="selection-actions closed">
+    <div class="controls btn-toolbar">
+      <input class="group-select" type="checkbox" />
+      <div class="btn-group">
         <a href="#" class="btn">Complete</a>
+      </div>
+      <div class="btn-group">
         <a href="#" class="btn">Postpone</a>
-        <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">
+      </div>
+      <div class="btn-group">
+        <a href="#" class="btn">Edit</a>
+      </div>
+      <div class="btn-group">
+        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
           More actions
           <span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
-          <li>Set priority</li>
-          <li><a href="#">Priority 1</a></li>
-          <li><a href="#">Priority 2</a></li>
-          <li><a href="#">Priority 3</a></li>
-          <li><a href="#">No priority</a></li>
-          <li>Move to list</li>
-          <li><a href="#">List two</a></li>
-          <li><a href="#">List three</a></li>
+          <li><a href="#">Set priority 1</a></li>
+          <li><a href="#">Set priority 2</a></li>
+          <li><a href="#">Set priority 3</a></li>
+          <li><a href="#">Clear priority</a></li>
+          <li><a href="#">Move to list one</a></li>
+          <li><a href="#">Move to list two</a></li>
+          <li><a href="#">Move to list three</a></li>
         </ul>
-      </th>
-      <th></th>
-    </tr>
-  </thead>
-  -->
-  <tbody>
-  </tbody>
+      </div>
+    </div>
+    <div class="handle">
+      <div class="handle-extender"></div>
+      <div class="handle-arrow-shadow"></div>
+      <div class="handle-arrow"></div>
+      <div class="handle-label">More</div>
+    </div>
+  </div>
+</div>
+
+<table class="task-table">
+  <tbody></tbody>
 </table>
