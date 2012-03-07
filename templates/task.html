@@ -2,6 +2,11 @@
   <input class="taskcheck" type="checkbox" />
 </td>
 <td class="description">{{description}}</td>
+<td class="tags">
+  {{#each tags}}
+    <span class="label">{{this}}</span>
+  {{/each}}
+</td>
 <td class="due">{{due_pp}}</td>
 <td class="completed">
   {{#if complete}}<i class="icon-ok"></i>{{/if}}

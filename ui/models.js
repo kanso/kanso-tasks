@@ -12,7 +12,8 @@ exports.Task = Backbone.Model.extend({
             complete: false,
             created_by: username,
             list: null,
-            created_at: Date.today().toISOString()
+            created_at: Date.today().toISOString(),
+            tags: []
         };
     },
     toggle: function () {

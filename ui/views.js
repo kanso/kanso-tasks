@@ -142,6 +142,11 @@ exports.ListView = Backbone.View.extend({
         else if (!task.priority) {
             this.showTip('Prioritize this task by typing !1, !2 or !3');
         }
+        else if (!task.tags.length) {
+            this.showTip(
+                'You can add tags using "#", eg. #shopping #work'
+            );
+        }
         else {
             this.showTip('Hit ENTER to add this task');
         }

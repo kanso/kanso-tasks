@@ -10,9 +10,17 @@ exports.parseTask = function (str) {
 
     str = exports.trim(str);
 
-    var priority = null, m;
+    var m;
+    var priority = null;
     while (m = /!([123])/.exec(str)) {
         priority = parseInt(m[1], 10);
+        str = str.substr(0, m.index) + str.substr(m.index + m[0].length);
+        str = exports.trim(str);
+    }
+
+    var tags = [];
+    while (m = /#([\w-]+)[,\.]?/.exec(str)) {
+        tags.push(m[1]);
         str = str.substr(0, m.index) + str.substr(m.index + m[0].length);
         str = exports.trim(str);
     }
@@ -37,9 +45,10 @@ exports.parseTask = function (str) {
     var description = words.join(' ');
 
     return {
-        due: due.toISOString(),
+        due: due ? due.toISOString(): null,
         priority: priority,
-        description: description
+        description: description,
+        tags: tags
     };
 };
 
