@@ -228,6 +228,9 @@ exports.TaskView = Backbone.View.extend({
                 this.model.attributes
             ))
         );
+        if (this.model.get('priority')) {
+            $(el).addClass('priority' + this.model.get('priority'));
+        }
         this.setText();
         this.$('.select input').change(function (ev) {
             if (this.checked) {
