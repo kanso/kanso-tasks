@@ -15,9 +15,27 @@ exports.AppView = Backbone.View.extend({
         $(this.el).html(this.template({}));
         return this;
     },
-    showList: function () {
-        var listview = new exports.ListView();
+    showList: function (view) {
+        var listview = new exports.ListView(view);
         this.$('#main').html(listview.render().el);
+    },
+    updateNav: function (subset) {
+        subset = subset || 'incomplete';
+
+        var pointer = this.$('#sidebar .icon-chevron-right');
+        pointer.removeClass('icon-chevron-right');
+        pointer.addClass('icon-empty');
+
+        var href = '#all/' + subset;
+        this.$('#sidebar li').removeClass('active');
+
+        var a = this.$('#sidebar .nav [href="' + href + '"]');
+        var newpointer = $('.icon-empty', a);
+        newpointer.removeClass('icon-empty');
+        newpointer.addClass('icon-chevron-right');
+
+        var lis = a.parents('li');
+        lis.addClass('active');
     }
 });
 
@@ -26,19 +44,19 @@ exports.ListView = Backbone.View.extend({
     className: 'list',
     template: templates['list.html'],
     events: {
-        'keyup #new-task': 'createOnEnter',
-        'focus #new-task': 'restartTimer', // setup timer again on focus
-        'blur #new-task': 'hideTip',
-        'click .handle': 'toggleActions',
-        'mouseover .handle': 'peekActions',
-        'mouseout .handle': 'unpeekActions',
-        'click tr .select input': 'checkSelection'
+        'keyup     #new-task':          'createOnEnter',
+        'focus     #new-task':          'restartTimer',
+        'blur      #new-task':          'hideTip',
+        'click     .handle':            'toggleActions',
+        'mouseover .handle':            'peekActions',
+        'mouseout  .handle':            'unpeekActions',
+        'click     tr .select input':   'checkSelection'
     },
-    initialize: function () {
+    initialize: function (view) {
         $(this.el).html(this.template({}));
         this.input = this.$('#new-task');
 
-        this.tasks = new collections.TaskList;
+        this.tasks = new collections.TaskList(view);
         this.tasks.bind('add',   this.addOne, this);
         this.tasks.bind('reset', this.addAll, this);
         this.tasks.bind('all',   this.render, this);
@@ -48,14 +66,14 @@ exports.ListView = Backbone.View.extend({
         // when clicking on a task, deselect all others and then
         // select targetted task row
 
-        var view = this;
+        var that = this;
         this.$('.task-table tr').live('click', function (ev) {
             if (ev.target.tagName === 'INPUT') {
                 // don't interfere with input element events
                 return;
             }
-            view.toggleSingleRow(this);
-            view.checkSelection();
+            that.toggleSingleRow(this);
+            that.checkSelection();
         });
     },
     render: function () {
@@ -230,6 +248,9 @@ exports.TaskView = Backbone.View.extend({
         );
         if (this.model.get('priority')) {
             $(el).addClass('priority' + this.model.get('priority'));
+        }
+        if (this.model.get('complete')) {
+            $(el).addClass('complete');
         }
         this.setText();
         this.$('.select input').change(function (ev) {

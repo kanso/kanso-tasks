@@ -1,7 +1,8 @@
 var Backbone = require('backbone'),
     adapter = require('backbone-adapter'),
     topbar = require('kanso-topbar'),
-    routes = require('./routes');
+    routes = require('./routes'),
+    views = require('./views');
 
 
 exports.databaseURL = function () {
@@ -12,6 +13,9 @@ exports.init = function () {
     // setup backbone-adapter
     Backbone.db = exports.databaseURL();
     Backbone.sync = adapter.sync;
+
+    // create global AppView instance
+    window.app_view = new views.AppView();
 
     // setup URL router
     new routes.WorkspaceRouter();

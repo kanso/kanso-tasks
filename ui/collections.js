@@ -6,10 +6,14 @@ var Backbone = require('backbone'),
 exports.TaskList = Backbone.Collection.extend({
     view: {
         ddoc: 'kanso-tasks',
-        name: 'tasks'
-        //query: { startkey: ['<list>'] }
+        name: 'incomplete_by_priority_and_due'
     },
     model: models.Task,
+    initialize: function (view) {
+        if (view) {
+            this.view = view;
+        }
+    },
     complete: function () {
         return this.filter(function (task) {
             return task.get('complete');

@@ -37,7 +37,7 @@ exports.parseTask = function (str) {
     var description = words.join(' ');
 
     return {
-        due: due,
+        due: due.toISOString(),
         priority: priority,
         description: description
     };
