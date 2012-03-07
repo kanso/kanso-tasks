@@ -5,3 +5,11 @@ exports.types = {
         }
     }
 };
+
+exports.tasks = {
+    map: function (doc) {
+        if (doc.type === 'task') {
+            emit([doc.list, doc.priority || 4, doc.due]);
+        }
+    }
+};

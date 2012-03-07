@@ -6,8 +6,8 @@ var Backbone = require('backbone'),
 exports.TaskList = Backbone.Collection.extend({
     view: {
         ddoc: 'kanso-tasks',
-        name: 'types',
-        query: { key: ['task'] }
+        name: 'tasks'
+        //query: { startkey: ['<list>'] }
     },
     model: models.Task,
     complete: function () {
