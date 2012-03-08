@@ -1,5 +1,4 @@
-var Backbone = require('backbone'),
-    views = require('./views');
+var Backbone = require('backbone');
 
 
 exports.WorkspaceRouter = Backbone.Router.extend({

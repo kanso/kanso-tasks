@@ -1,5 +1,5 @@
 var Backbone = require('backbone'),
-    utils = require('./utils'),
+    utils = require('../utils'),
     session = require('session');
 
 

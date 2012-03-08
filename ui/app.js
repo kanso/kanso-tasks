@@ -2,7 +2,7 @@ var Backbone = require('backbone'),
     adapter = require('backbone-adapter'),
     topbar = require('kanso-topbar'),
     routes = require('./routes'),
-    views = require('./views');
+    AppView = require('./views/app').AppView;
 
 
 exports.databaseURL = function () {
@@ -15,7 +15,7 @@ exports.init = function () {
     Backbone.sync = adapter.sync;
 
     // create global AppView instance
-    window.app_view = new views.AppView();
+    window.app_view = new AppView();
 
     // setup URL router
     new routes.WorkspaceRouter();

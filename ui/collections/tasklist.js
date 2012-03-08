@@ -1,6 +1,5 @@
 var Backbone = require('backbone'),
-    models = require('./models'),
-    app = require('./app');
+    Task = require('../models/task').Task;
 
 
 exports.TaskList = Backbone.Collection.extend({
@@ -8,7 +7,7 @@ exports.TaskList = Backbone.Collection.extend({
         ddoc: 'kanso-tasks',
         name: 'incomplete_by_priority_and_due'
     },
-    model: models.Task,
+    model: Task,
     initialize: function (view) {
         if (view) {
             this.view = view;
