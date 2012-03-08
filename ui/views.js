@@ -46,7 +46,7 @@ exports.NavigationView = Backbone.View.extend({
                 subset: 'complete',
                 href: '#all/complete',
                 active: false
-            },
+            }
         ]
     }],
     tags: [],
@@ -63,6 +63,7 @@ exports.NavigationView = Backbone.View.extend({
         return this;
     },
     selectNav: function (tag, subset, /*optional*/obj) {
+        this.selected = {tag: tag, subset: subset};
         if (!obj) {
             // by default update both main and tags navigation
             this.selectNav(tag, subset, this.main);
@@ -95,8 +96,40 @@ exports.NavigationView = Backbone.View.extend({
                 icon: 'tag',
                 text: name,
                 tag: name,
-                active: false,
-                href: '#tag/' + encodeURIComponent(name) + '/incomplete'
+                active: (this.selected.tag === name),
+                href: '#tag/' + encodeURIComponent(name) + '/incomplete',
+                children: [
+                    {
+                        text: 'Incomplete',
+                        subset: 'incomplete',
+                        href: '#tag/' + name + '/incomplete',
+                        active: (this.selected.tag === name && this.selected.subset === 'incomplete')
+                    },
+                    {
+                        text: 'Overdue',
+                        subset: 'overdue',
+                        href: '#tag/' + name + '/overdue',
+                        active: (this.selected.tag === name && this.selected.subset === 'overdue')
+                    },
+                    {
+                        text: 'Due today',
+                        subset: 'today',
+                        href: '#tag/' + name + '/today',
+                        active: (this.selected.tag === name && this.selected.subset === 'today')
+                    },
+                    {
+                        text: 'Due 7 days',
+                        subset: 'week',
+                        href: '#tag/' + name + '/week',
+                        active: (this.selected.tag === name && this.selected.subset === 'week')
+                    },
+                    {
+                        text: 'Complete',
+                        subset: 'complete',
+                        href: '#tag/' + name + '/complete',
+                        active: (this.selected.tag === name && this.selected.subset === 'complete')
+                    }
+                ]
             });
             this.tags = _.sortBy(this.tags, function (t) {
                 return t.text;

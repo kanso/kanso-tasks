@@ -1,11 +1,12 @@
 <ul class="nav nav-list">
+  <li class="nav-header">Overview</li>
   {{#each main}}
-  <li{{#if active}} class="active"{{/if}}>
+  <li class="{{#if active}}active{{else}}collapsed{{/if}}">
     <a href="{{href}}"><i class="{{#if active}}icon-white {{/if}}icon-{{#if icon}}{{icon}}{{else}}empty{{/if}}"></i> {{text}}</a>
     {{#if children}}
     <ul>
       {{#each children}}
-      <li{{#if active}} class="active"{{/if}}>
+      <li class="{{#if active}}active{{else}}collapsed{{/if}}">
         <a href="{{href}}"><i class="icon-{{#if active}}chevron-right{{else}}empty{{/if}}"></i> {{text}}</a>
       </li>
       {{/each}}
@@ -17,12 +18,12 @@
   <li class="nav-header">Tags</li>
   {{/if}}
   {{#each tags}}
-  <li {{#if active}} class="active"{{/if}}>
+  <li class="{{#if active}}active{{else}}collapsed{{/if}}">
     <a href="{{href}}"><i class="icon-tag"></i> {{text}}</a>
     {{#if children}}
     <ul>
       {{#each children}}
-      <li{{#if active}} class="active"{{/if}}>
+      <li class="{{#if active}}active{{else}}collapsed{{/if}}">
         <a href="{{href}}"><i class="icon-{{#if active}}chevron-right{{else}}empty{{/if}}"></i> {{text}}</a>
       </li>
       {{/each}}
