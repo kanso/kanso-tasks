@@ -4,7 +4,7 @@
 <td class="description">{{description}}</td>
 <td class="tags">
   {{#each tags}}
-    <span class="label">{{this}}</span>
+    <a class="label" href="#tag/{{uc this}}/incomplete">{{this}}</a>
   {{/each}}
 </td>
 <td class="due">{{due_pp}}</td>

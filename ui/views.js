@@ -76,7 +76,7 @@ exports.NavigationView = Backbone.View.extend({
                 if (n.children) {
                     for (var j = 0; j < n.children.length; j++) {
                         var c = n.children[j];
-                        c.active =  (c.subset === subset);
+                        c.active = (n.tag === tag && c.subset === subset);
                     }
                 }
             }
@@ -95,7 +95,8 @@ exports.NavigationView = Backbone.View.extend({
                 icon: 'tag',
                 text: name,
                 tag: name,
-                active: false
+                active: false,
+                href: '#tag/' + encodeURIComponent(name) + '/incomplete'
             });
             this.tags = _.sortBy(this.tags, function (t) {
                 return t.text;
@@ -180,8 +181,8 @@ exports.ListView = Backbone.View.extend({
 
         var that = this;
         this.$('.task-table tr').live('click', function (ev) {
-            if (ev.target.tagName === 'INPUT') {
-                // don't interfere with input element events
+            if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'A') {
+                // don't interfere with input element events or link clicks
                 return;
             }
             that.toggleSingleRow(this);

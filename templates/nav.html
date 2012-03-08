@@ -1,0 +1,33 @@
+<ul class="nav nav-list">
+  {{#each main}}
+  <li{{#if active}} class="active"{{/if}}>
+    <a href="{{href}}"><i class="{{#if active}}icon-white {{/if}}icon-{{#if icon}}{{icon}}{{else}}empty{{/if}}"></i> {{text}}</a>
+    {{#if children}}
+    <ul>
+      {{#each children}}
+      <li{{#if active}} class="active"{{/if}}>
+        <a href="{{href}}"><i class="icon-{{#if active}}chevron-right{{else}}empty{{/if}}"></i> {{text}}</a>
+      </li>
+      {{/each}}
+    </ul>
+    {{/if}}
+  </li>
+  {{/each}}
+  {{#if tags.length}}
+  <li class="nav-header">Tags</li>
+  {{/if}}
+  {{#each tags}}
+  <li {{#if active}} class="active"{{/if}}>
+    <a href="{{href}}"><i class="icon-tag"></i> {{text}}</a>
+    {{#if children}}
+    <ul>
+      {{#each children}}
+      <li{{#if active}} class="active"{{/if}}>
+        <a href="{{href}}"><i class="icon-{{#if active}}chevron-right{{else}}empty{{/if}}"></i> {{text}}</a>
+      </li>
+      {{/each}}
+    </ul>
+    {{/if}}
+  </li>
+  {{/each}}
+</ul>

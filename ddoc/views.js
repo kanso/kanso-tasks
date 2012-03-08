@@ -1,23 +1,38 @@
-exports.incomplete_by_due_and_priority = {
+exports.incomplete_by_tag_due_and_priority = {
     map: function (doc) {
         if (doc.type === 'task' && !doc.complete && doc.due) {
-            emit([doc.due, doc.priority]);
+            emit([null, doc.due || {}, doc.priority || 4]);
+            if (doc.tags) {
+                for (var i = 0; i < doc.tags.length; i++) {
+                    emit([doc.tags[i], doc.due || {}, doc.priority || 4]);
+                }
+            }
         }
     }
 };
 
-exports.incomplete_by_priority_and_due = {
+exports.incomplete_by_tag_priority_and_due = {
     map: function (doc) {
         if (doc.type === 'task' && !doc.complete) {
-            emit([doc.priority || 4, doc.due || {}]);
+            emit([null, doc.priority || 4, doc.due || {}]);
+            if (doc.tags) {
+                for (var i = 0; i < doc.tags.length; i++) {
+                    emit([doc.tags[i], doc.priority || 4, doc.due || {}]);
+                }
+            }
         }
     }
 };
 
-exports.complete_by_completed_at = {
+exports.complete_by_tag_and_completed_at = {
     map: function (doc) {
         if (doc.type === 'task' && doc.complete) {
-            emit([doc.priority || 4, doc.due || {}]);
+            emit([null, doc.priority || 4, doc.due || {}]);
+            if (doc.tags) {
+                for (var i = 0; i < doc.tags.length; i++) {
+                    emit([doc.tags[i], doc.priority || 4, doc.due || {}]);
+                }
+            }
         }
     }
 };
