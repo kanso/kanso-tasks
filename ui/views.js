@@ -103,31 +103,46 @@ exports.NavigationView = Backbone.View.extend({
                         text: 'Incomplete',
                         subset: 'incomplete',
                         href: '#tag/' + name + '/incomplete',
-                        active: (this.selected.tag === name && this.selected.subset === 'incomplete')
+                        active: (
+                            this.selected.tag === name &&
+                            this.selected.subset === 'incomplete'
+                        )
                     },
                     {
                         text: 'Overdue',
                         subset: 'overdue',
                         href: '#tag/' + name + '/overdue',
-                        active: (this.selected.tag === name && this.selected.subset === 'overdue')
+                        active: (
+                            this.selected.tag === name &&
+                            this.selected.subset === 'overdue'
+                        )
                     },
                     {
                         text: 'Due today',
                         subset: 'today',
                         href: '#tag/' + name + '/today',
-                        active: (this.selected.tag === name && this.selected.subset === 'today')
+                        active: (
+                            this.selected.tag === name &&
+                            this.selected.subset === 'today'
+                        )
                     },
                     {
                         text: 'Due 7 days',
                         subset: 'week',
                         href: '#tag/' + name + '/week',
-                        active: (this.selected.tag === name && this.selected.subset === 'week')
+                        active: (
+                            this.selected.tag === name &&
+                            this.selected.subset === 'week'
+                        )
                     },
                     {
                         text: 'Complete',
                         subset: 'complete',
                         href: '#tag/' + name + '/complete',
-                        active: (this.selected.tag === name && this.selected.subset === 'complete')
+                        active: (
+                            this.selected.tag === name &&
+                            this.selected.subset === 'complete'
+                        )
                     }
                 ]
             });
@@ -402,6 +417,12 @@ exports.TaskView = Backbone.View.extend({
         }
         if (this.model.get('complete')) {
             $(el).addClass('complete');
+        }
+        if (this.model.overdue()) {
+            $(el).addClass('overdue');
+        }
+        else if (this.model.due_today()) {
+            $(el).addClass('today');
         }
         this.setText();
         this.$('.select input').change(function (ev) {

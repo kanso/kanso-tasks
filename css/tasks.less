@@ -235,6 +235,17 @@
 .task-table tr.complete {
     border-left: 4px solid lighten(@green, 15%);
 }
+.task-table tr .tags {
+    text-align: right;
+    padding: 0 2em;
+}
+.task-table tr.overdue .due {
+    color: lighten(@red, 15%);
+    font-weight: bold;
+}
+.task-table tr.today .due {
+    font-weight: bold;
+}
 
 .task-table td {
     padding: 8px 0;

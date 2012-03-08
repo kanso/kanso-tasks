@@ -25,5 +25,22 @@ exports.Task = Backbone.Model.extend({
             return utils.prettyPrintDate(new Date(due));
         }
         return '';
+    },
+    overdue: function () {
+        var due = this.get('due');
+        if (due) {
+            return due < Date.today().toISOString();
+        }
+        return false;
+    },
+    due_today: function () {
+        var due = this.get('due');
+        if (due) {
+            return (
+                due >= Date.today().toISOString() &&
+                due < Date.today().add({days: 1}).toISOString()
+            );
+        }
+        return false;
     }
 });
