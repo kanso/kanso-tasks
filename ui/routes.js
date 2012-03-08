@@ -21,7 +21,8 @@ exports.WorkspaceRouter = Backbone.Router.extend({
         var tomorrow = t.clone().add({days: 1}).toISOString();
         var next_week = t.clone().add({weeks: 1}).toISOString();
 
-        window.app_view.updateNav(subset);
+        subset = subset || 'incomplete';
+        window.app_view.nav_view.selectNav(null, subset);
 
         switch (subset) {
             case 'overdue':

@@ -2,7 +2,136 @@ var Backbone = require('backbone'),
     templates = require('handlebars').templates,
     collections = require('./collections'),
     utils = require('./utils'),
+    db = require('db').current(),
     _ = require('underscore');
+
+
+exports.NavigationView = Backbone.View.extend({
+    id: 'navigation',
+    tagName: 'div',
+    template: templates['nav.html'],
+    main: [{
+        text: 'All tasks',
+        tag: null,
+        href: '#all/incomplete',
+        icon: 'asterisk',
+        active: true,
+        children: [
+            {
+                text: 'Incomplete',
+                subset: 'incomplete',
+                href: '#all/incomplete',
+                active: true
+            },
+            {
+                text: 'Overdue',
+                subset: 'overdue',
+                href: '#all/overdue',
+                active: false
+            },
+            {
+                text: 'Due today',
+                subset: 'today',
+                href: '#all/today',
+                active: false
+            },
+            {
+                text: 'Due 7 days',
+                subset: 'week',
+                href: '#all/week',
+                active: false
+            },
+            {
+                text: 'Complete',
+                subset: 'complete',
+                href: '#all/complete',
+                active: false
+            },
+        ]
+    }],
+    tags: [],
+    initialize: function () {
+        this.el = $('#sidebar');
+        this.render();
+        this.update();
+    },
+    render: function () {
+        $(this.el).html(this.template({
+            main: this.main,
+            tags: this.tags
+        }));
+        return this;
+    },
+    selectNav: function (tag, subset, /*optional*/obj) {
+        if (!obj) {
+            // by default update both main and tags navigation
+            this.selectNav(tag, subset, this.main);
+            this.selectNav(tag, subset, this.tags);
+            return;
+        }
+        for (var i = 0, len = obj.length; i < len; i++) {
+            var n = obj[i];
+            if (n) {
+                n.active = (n.tag === tag);
+                if (n.children) {
+                    for (var j = 0; j < n.children.length; j++) {
+                        var c = n.children[j];
+                        c.active =  (c.subset === subset);
+                    }
+                }
+            }
+        }
+        this.render();
+    },
+    hasTag: function (name) {
+        return !!(_.find(this.tags, function (n) {
+            return n.tag === name;
+        }));
+    },
+    addTag: function (name) {
+        if (!this.hasTag(name)) {
+            this.tags.push({
+                type: 'entry',
+                icon: 'tag',
+                text: name,
+                tag: name,
+                active: false
+            });
+            this.tags = _.sortBy(this.tags, function (t) {
+                return t.text;
+            });
+        }
+    },
+    updateTags: function (names) {
+        _.each(names, this.addTag, this);
+    },
+    update: function () {
+        var that = this;
+        var q = {
+            reduce: true,
+            group: true
+        }
+        db.getView('kanso-tasks', 'nav_info', q, function (err, data) {
+            if (err) {
+                return console.error(err);
+            }
+            var counts = {tags: {}};
+            _.forEach(data.rows, function (r) {
+                if (r.key[0] === null) {
+                    counts[r.key[1]] = r.value;
+                }
+                else {
+                    if (!counts.tags[r.key[0]]) {
+                        counts.tags[r.key[0]] = {};
+                    }
+                    counts.tags[r.key[0]][r.key[1]] = r.value;
+                }
+            });
+            that.updateTags(_.keys(counts.tags));
+            that.render();
+        });
+    }
+});
 
 
 exports.AppView = Backbone.View.extend({
@@ -10,32 +139,15 @@ exports.AppView = Backbone.View.extend({
     template: templates['app.html'],
     initialize: function () {
         this.render();
+        this.nav_view = new exports.NavigationView();
     },
     render: function () {
         $(this.el).html(this.template({}));
         return this;
     },
     showList: function (view) {
-        var listview = new exports.ListView(view);
-        this.$('#main').html(listview.render().el);
-    },
-    updateNav: function (subset) {
-        subset = subset || 'incomplete';
-
-        var pointer = this.$('#sidebar .icon-chevron-right');
-        pointer.removeClass('icon-chevron-right');
-        pointer.addClass('icon-empty');
-
-        var href = '#all/' + subset;
-        this.$('#sidebar li').removeClass('active');
-
-        var a = this.$('#sidebar .nav [href="' + href + '"]');
-        var newpointer = $('.icon-empty', a);
-        newpointer.removeClass('icon-empty');
-        newpointer.addClass('icon-chevron-right');
-
-        var lis = a.parents('li');
-        lis.addClass('active');
+        this.list_view = new exports.ListView(view);
+        this.$('#main').html(this.list_view.render().el);
     }
 });
 
@@ -241,7 +353,7 @@ exports.TaskView = Backbone.View.extend({
         this.model.bind('destroy', this.remove, this);
     },
     error: function (err) {
-        console.log(['task error', this.el, err]);
+        console.error(err);
     },
     render: function () {
         var el = this.el;
