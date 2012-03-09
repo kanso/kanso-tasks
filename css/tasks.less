@@ -248,17 +248,15 @@
     text-align: left;
     padding: 16px 0;
 }
-.task-table thead tr {
-    border-left: none;
-}
-.task-table thead .actions {
-    opacity: 0.33;
-}
 .task-table tr {
     margin: 0;
     padding: 8px 16px;
     border-bottom: 1px dotted #ccc;
     border-left: 4px solid #ccc;
+}
+.task-table tr.new {
+    opacity: 0.50;
+    filter: alpha(opacity=50);
 }
 .task-table tr.priority1 {
     border-left: 4px solid lighten(@red, 25%);

@@ -26,10 +26,10 @@ exports.TaskView = Backbone.View.extend({
         var checked = $('.select input', this.el).is(':checked');
 
         $(el).html(
-            this.template(_.extend(
-                { due_pp: this.model.due_pp() },
-                this.model.attributes
-            ))
+            this.template(_.extend({
+                due_pp: this.model.due_pp(),
+                isNew: this.model.isNew()
+            }, this.model.attributes))
         );
         if (checked) {
             $('.select input', this.el).attr({checked: 'checked'});
@@ -37,6 +37,30 @@ exports.TaskView = Backbone.View.extend({
         }
         else {
             $(el).removeClass('selected');
+        }
+
+        if (this.model.isNew()) {
+            $(el).addClass('new');
+            this.$('.select input').remove();
+            var spinner = new Spinner({
+                lines: 8, // The number of lines to draw
+                length: 4, // The length of each line
+                width: 2, // The line thickness
+                radius: 4, // The radius of the inner circle
+                color: '#000', // #rgb or #rrggbb
+                speed: 1, // Rounds per second
+                trail: 60, // Afterglow percentage
+                shadow: false, // Whether to render a shadow
+                hwaccel: false, // Whether to use hardware acceleration
+                className: 'spinner', // The CSS class to assign to the spinner
+                zIndex: 2e9, // The z-index (defaults to 2000000000)
+                top: 'auto', // Top position relative to parent in px
+                left: 'auto' // Left position relative to parent in px
+            });
+            spinner.spin(this.$('.select'));
+        }
+        else {
+            $(el).removeClass('new');
         }
 
         $(el).attr({rel: this.model.get('_id')});
