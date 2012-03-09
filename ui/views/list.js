@@ -17,9 +17,11 @@ exports.ListView = Backbone.View.extend({
         'click     .handle':            'toggleActions',
         'mouseover .handle':            'peekActions',
         'mouseout  .handle':            'unpeekActions',
-        'click     tr .select input':   'checkSelection',
+        'click     tr .select input':   'updateSelection',
         'click     .complete-btn':      'completeSelected',
-        'click     .postpone-btn':      'postponeSelected'
+        'click     .postpone-btn':      'postponeSelected',
+        'mouseover .controls':          'overControls',
+        'mouseout  .controls':          'outControls'
     },
     initialize: function (view) {
         $(this.el).html(this.template({}));
@@ -33,6 +35,8 @@ exports.ListView = Backbone.View.extend({
         this.tasks.bind('error',  this.error,          this);
         this.tasks.fetch();
 
+        this.checkSelection();
+
         // when clicking on a task, deselect all others and then
         // select targetted task row
 
@@ -43,7 +47,7 @@ exports.ListView = Backbone.View.extend({
                 return;
             }
             that.toggleSingleRow(this);
-            that.checkSelection();
+            that.updateSelection(ev);
         });
         this.$('input.group-select').click(function (ev) {
             // the :checked change has already occurred
@@ -81,6 +85,11 @@ exports.ListView = Backbone.View.extend({
                     $(this).attr({checked: null});
                 }
             }
+            // once the group-select checkbox has been clicked,
+            // don't hold open the controls even if manually opened
+            that.hold_actions_open = false;
+
+            that.checkSelection();
         });
     },
     render: function () {
@@ -102,11 +111,13 @@ exports.ListView = Backbone.View.extend({
         this.$('.handle-label').text('HIDE');
     },
     hideActions: function () {
+        this.hold_actions_open = false;
         this.$('.selection-actions').addClass('closed');
         this.$('.handle-label').text('MORE');
     },
     toggleActions: function () {
         if (this.$('.selection-actions').hasClass('closed')) {
+            this.hold_actions_open = true;
             this.showActions();
         }
         else {
@@ -192,7 +203,24 @@ exports.ListView = Backbone.View.extend({
         }
         this.timer = setTimeout(_.bind(this.nextTip, this), 1500);
     },
-    checkSelection: function () {
+    updateSelection: function (ev) {
+        var checked = this.$('.task-table .select input:checked');
+        var all = this.$('.task-table .select input');
+
+        if (checked.length) {
+            if (checked.length === all.length) {
+                this.some = null;
+            }
+            else {
+                this.some = checked;
+            }
+        }
+        else {
+            this.some = null;
+        }
+        this.checkSelection(ev);
+    },
+    checkSelection: function (ev) {
         var checked = this.$('.task-table .select input:checked');
         var all = this.$('.task-table .select input');
 
@@ -202,21 +230,36 @@ exports.ListView = Backbone.View.extend({
             var group = this.$('input.group-select');
             if (checked.length === all.length) {
                 group.removeClass('some');
-                this.some = null;
             }
             else {
                 group.addClass('some');
-                this.some = checked;
             }
             group.attr({checked: 'checked'});
+
+            this.$('.complete-btn').removeClass('disabled');
+            this.$('.postpone-btn').removeClass('disabled');
+            this.$('.more-btn').removeClass('disabled');
+
+            if (checked.length === 1) {
+                this.$('.edit-btn').removeClass('disabled');
+            }
+            else {
+                this.$('.edit-btn').addClass('disabled');
+            }
         }
         else {
-            //check if hovering over controls
-            this.hideActions();
+            if (!this.hover_controls) {
+                this.hideActions();
+            }
 
             var group = this.$('input.group-select');
             group.removeClass('some');
             group.attr({checked: null});
+
+            this.$('.complete-btn').addClass('disabled');
+            this.$('.postpone-btn').addClass('disabled');
+            this.$('.edit-btn').addClass('disabled');
+            this.$('.more-btn').addClass('disabled');
         }
     },
     createOnEnter: function (ev) {
@@ -281,5 +324,22 @@ exports.ListView = Backbone.View.extend({
             task.save();
         });
         return false;
+    },
+    overControls: function () {
+        this.hover_controls = true;
+        clearTimeout(this.hover_hide_timer);
+    },
+    outControls: function () {
+        this.hover_controls = false;
+
+        var that = this;
+        if (!this.hold_actions_open) {
+            this.hover_hide_timer = setTimeout(function () {
+                var checked = this.$('.task-table .select input:checked');
+                if (!checked.length) {
+                    that.hideActions();
+                }
+            }, 400);
+        }
     }
 });
