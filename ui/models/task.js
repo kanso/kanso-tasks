@@ -4,6 +4,7 @@ var Backbone = require('backbone'),
 
 
 exports.Task = Backbone.Model.extend({
+    idAttribute: '_id',
     type: 'task',
     defaults: function () {
         var username = session.userCtx ? session.userCtx.name: null;

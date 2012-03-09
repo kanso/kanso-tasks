@@ -17,17 +17,19 @@ exports.ListView = Backbone.View.extend({
         'click     .handle':            'toggleActions',
         'mouseover .handle':            'peekActions',
         'mouseout  .handle':            'unpeekActions',
-        'click     tr .select input':   'checkSelection'
+        'click     tr .select input':   'checkSelection',
+        'click     .complete-btn':      'completeSelected'
     },
     initialize: function (view) {
         $(this.el).html(this.template({}));
         this.input = this.$('#new-task');
 
         this.tasks = new TaskList(view);
-        this.tasks.bind('add',   this.addOne, this);
-        this.tasks.bind('reset', this.addAll, this);
-        this.tasks.bind('all',   this.render, this);
-        this.tasks.bind('error', this.error, this);
+        this.tasks.bind('add',    this.addOne,         this);
+        this.tasks.bind('change', this.checkSelection, this);
+        this.tasks.bind('reset',  this.addAll,         this);
+        this.tasks.bind('all',    this.render,         this);
+        this.tasks.bind('error',  this.error,          this);
         this.tasks.fetch();
 
         // when clicking on a task, deselect all others and then
@@ -243,5 +245,16 @@ exports.ListView = Backbone.View.extend({
             this.hideTip();
         }
         this.prev_text = text;
+    },
+    completeSelected: function (ev) {
+        ev.preventDefault();
+        var that = this;
+        this.$('.task-table tr.selected').each(function () {
+            var id = $(this).attr('rel');
+            var task = that.tasks.get(id);
+            task.set('complete', true);
+            task.save();
+        });
+        return false;
     }
 });
