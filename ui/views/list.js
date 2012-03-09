@@ -42,6 +42,43 @@ exports.ListView = Backbone.View.extend({
             that.toggleSingleRow(this);
             that.checkSelection();
         });
+        this.$('input.group-select').click(function (ev) {
+            // the :checked change has already occurred
+            // when this event handle fires!
+            if ($(this).is(':checked')) {
+                if (that.some && that.some.length) {
+                    $(this).addClass('some');
+                    that.some.attr({checked: 'checked'}).change();
+                }
+                else {
+                    $(this).removeClass('some');
+                    // select all
+                    that.$('.task-table tr .select input').attr({
+                        checked: 'checked'
+                    }).change();
+                }
+                $(this).attr({checked: 'checked'});
+            }
+            else {
+                if ($(this).hasClass('some')) {
+
+                    // select all
+                    that.$('.task-table tr .select input').attr({
+                        checked: 'checked'
+                    }).change();
+
+                    $(this).removeClass('some');
+                    $(this).attr({checked: 'checked'});
+                }
+                else {
+                    // deselect all
+                    that.$('.task-table tr .select input').attr({
+                        checked: null
+                    }).change();
+                    $(this).attr({checked: null});
+                }
+            }
+        });
     },
     render: function () {
         // update stats and other aggregate values
@@ -153,15 +190,30 @@ exports.ListView = Backbone.View.extend({
         this.timer = setTimeout(_.bind(this.nextTip, this), 1500);
     },
     checkSelection: function () {
-        //count selected
-        //check if hovering over
-        //check if manually opened?
-        var els = this.$('.task-table :checked');
-        if (els.length) {
+        var checked = this.$('.task-table .select input:checked');
+        var all = this.$('.task-table .select input');
+
+        if (checked.length) {
             this.showActions();
+
+            var group = this.$('input.group-select');
+            if (checked.length === all.length) {
+                group.removeClass('some');
+                this.some = null;
+            }
+            else {
+                group.addClass('some');
+                this.some = checked;
+            }
+            group.attr({checked: 'checked'});
         }
         else {
+            //check if hovering over controls
             this.hideActions();
+
+            var group = this.$('input.group-select');
+            group.removeClass('some');
+            group.attr({checked: null});
         }
     },
     createOnEnter: function (ev) {
