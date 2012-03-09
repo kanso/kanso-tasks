@@ -18,7 +18,8 @@ exports.ListView = Backbone.View.extend({
         'mouseover .handle':            'peekActions',
         'mouseout  .handle':            'unpeekActions',
         'click     tr .select input':   'checkSelection',
-        'click     .complete-btn':      'completeSelected'
+        'click     .complete-btn':      'completeSelected',
+        'click     .postpone-btn':      'postponeSelected'
     },
     initialize: function (view) {
         $(this.el).html(this.template({}));
@@ -253,6 +254,30 @@ exports.ListView = Backbone.View.extend({
             var id = $(this).attr('rel');
             var task = that.tasks.get(id);
             task.set('complete', true);
+            task.save();
+        });
+        return false;
+    },
+    postponeSelected: function (ev) {
+        ev.preventDefault();
+        var that = this;
+        this.$('.task-table tr.selected').each(function () {
+            var id = $(this).attr('rel');
+            var task = that.tasks.get(id);
+            if (!task.get('due')) {
+                // don't try to postpone tasks without a due date
+                return;
+            }
+            var due = new Date(task.get('due'));
+            if (due < Date.today()) {
+                // due date is in the past, set it to today
+                due = Date.today();
+            }
+            else {
+                // push due date forward one day
+                due.add({days: 1});
+            }
+            task.set('due', due.toISOString());
             task.save();
         });
         return false;

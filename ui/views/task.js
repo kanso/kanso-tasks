@@ -21,12 +21,23 @@ exports.TaskView = Backbone.View.extend({
     },
     render: function () {
         var el = this.el;
+
+        // test if checked
+        var checked = $('.select input', this.el).is(':checked');
+
         $(el).html(
             this.template(_.extend(
                 { due_pp: this.model.due_pp() },
                 this.model.attributes
             ))
         );
+        if (checked) {
+            $('.select input', this.el).attr({checked: 'checked'});
+            $(el).addClass('selected');
+        }
+        else {
+            $(el).removeClass('selected');
+        }
 
         $(el).attr({rel: this.model.get('_id')});
 
@@ -36,12 +47,22 @@ exports.TaskView = Backbone.View.extend({
         if (this.model.get('complete')) {
             $(el).addClass('complete');
         }
+        else {
+            $(el).removeClass('complete');
+        }
         if (this.model.overdue()) {
             $(el).addClass('overdue');
         }
-        else if (this.model.due_today()) {
+        else {
+            $(el).removeClass('overdue');
+        }
+        if (this.model.due_today()) {
             $(el).addClass('today');
         }
+        else {
+            $(el).removeClass('today');
+        }
+
         this.setText();
         this.$('.select input').change(function (ev) {
             if (this.checked) {
