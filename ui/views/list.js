@@ -1,6 +1,7 @@
 var Backbone = require('backbone'),
     templates = require('handlebars').templates,
     TaskView = require('./task').TaskView,
+    Task = require('../models/task').Task,
     utils = require('../utils'),
     _ = require('underscore');
 
@@ -27,11 +28,11 @@ exports.ListView = Backbone.View.extend({
         this.input = this.$('#new-task');
 
         this.tasks = tasks;
-        this.tasks.bind('add',    this.addOne,         this);
-        this.tasks.bind('change', this.checkSelection, this);
-        this.tasks.bind('reset',  this.addAll,         this);
-        this.tasks.bind('all',    this.render,         this);
-        this.tasks.bind('error',  this.error,          this);
+        this.tasks.bind('add',    this.addOne,  this);
+        this.tasks.bind('change', this.change,  this);
+        this.tasks.bind('reset',  this.addAll,  this);
+        this.tasks.bind('all',    this.render,  this);
+        this.tasks.bind('error',  this.error,   this);
         this.tasks.fetch();
 
         this.checkSelection();
@@ -94,6 +95,20 @@ exports.ListView = Backbone.View.extend({
     render: function () {
         // update stats and other aggregate values
         return this;
+    },
+    change: function () {
+        this.checkSelection();
+        this.pruneTasks();
+    },
+    pruneTasks: function () {
+        var that = this;
+        var removing = _.reject(this.tasks.models, this.tasks.shouldInclude);
+        _.each(removing, function (task) {
+            that.$('tr[rel="' + task.get('_id') + '"]').fadeOut(function () {
+                this.remove();
+            });
+        });
+        this.tasks.remove(removing);
     },
     addOne: function (task) {
         var view = new TaskView({model: task});
@@ -281,8 +296,11 @@ exports.ListView = Backbone.View.extend({
                 if (this.timer) {
                     clearTimeout(this.timer);
                 }
-                var task = utils.parseTask(text);
-                this.tasks.create(task);
+                var task = new Task(utils.parseTask(text));
+                task.save();
+                if (this.tasks.shouldInclude(task)) {
+                    this.tasks.add(task);
+                }
                 this.input.val('');
                 this.prev_text = null;
                 this.hideTip();

@@ -4,9 +4,10 @@ var Backbone = require('backbone'),
 
 exports.TaskList = Backbone.Collection.extend({
     model: Task,
-    initialize: function (view, comparator) {
-        this.view = view;
-        this.comparator = comparator;
+    initialize: function (models, options) {
+        this.view = options.view;
+        this.comparator = options.comparator;
+        this.shouldInclude = options.shouldInclude;
     },
     complete: function () {
         return this.filter(function (task) {
