@@ -1,101 +1,126 @@
-var Backbone = require('backbone');
+var Backbone = require('backbone'),
+    TaskList = require('./collections/tasklist').TaskList;
 
 
 exports.WorkspaceRouter = Backbone.Router.extend({
     routes: {
-        "":                 "all",
-        "help":             "help",
-        "all":              "all",
-        "all/:subset":      "all",
-        "all/:subset":      "all",
-        "tag/:tag":         "tag",
-        "tag/:tag/:subset": "tag"
+        "":                    "listIncomplete",
+        "help":                "help",
+        "all":                 "listIncomplete",
+        "all/incomplete":      "listIncomplete",
+        "all/overdue":         "listOverdue",
+        "all/today":           "listToday",
+        "all/week":            "listWeek",
+        "all/complete":        "listComplete",
+        "tag/:tag":            "listIncomplete",
+        "tag/:tag/incomplete": "listIncomplete",
+        "tag/:tag/overdue":    "listOverdue",
+        "tag/:tag/today":      "listToday",
+        "tag/:tag/week":       "listWeek",
+        "tag/:tag/complete":   "listComplete"
     },
     help: function() {
         $('#content').text('help');
     },
-    all: function (subset) {
-        return this.tag(null, subset);
+    listIncomplete: function (tag) {
+        tag = tag || null;
+        var tasks = new TaskList(
+            // view
+            {
+                ddoc: 'kanso-tasks',
+                name: 'incomplete_by_tag_priority_and_due',
+                query: { startkey: [tag], endkey: [tag, {}] }
+            },
+            // comparator
+            function (task) {
+                console.log('incomplete comparator called');
+                return [
+                    task.get('priority') || 4,
+                    task.get('due') || {}
+                ];
+            }
+        );
+        window.app_view.nav_view.selectNav(tag, 'incomplete');
+        window.app_view.showTaskList(tasks);
     },
-    tag: function (tag, subset) {
+    listOverdue: function (tag) {
+        tag = tag || null;
+        var today = Date.today().toISOString();
+        var tasks = new TaskList(
+            {
+                ddoc: 'kanso-tasks',
+                name: 'incomplete_by_tag_due_and_priority',
+                query: { startkey: [tag], endkey: [tag, today] }
+            },
+            // comparator
+            function (task) {
+                return [
+                    task.get('due') || {},
+                    task.get('priority') || 4
+                ];
+            }
+        );
+        window.app_view.nav_view.selectNav(tag, 'overdue');
+        window.app_view.showTaskList(tasks);
+    },
+    listToday: function (tag) {
+        tag = tag || null;
         var t = Date.today();
         var today = t.toISOString();
         var tomorrow = t.clone().add({days: 1}).toISOString();
+        var tasks = new TaskList(
+            {
+                ddoc: 'kanso-tasks',
+                name: 'incomplete_by_tag_due_and_priority',
+                query: { startkey: [tag, today], endkey: [tag, tomorrow] }
+            },
+            // comparator
+            function (task) {
+                return [
+                    task.get('due') || {},
+                    task.get('priority') || 4
+                ];
+            }
+        );
+        window.app_view.nav_view.selectNav(tag, 'today');
+        window.app_view.showTaskList(tasks);
+    },
+    listWeek: function (tag) {
+        tag = tag || null;
+        var t = Date.today();
+        var today = t.toISOString();
         var next_week = t.clone().add({weeks: 1}).toISOString();
-
-        subset = subset || 'incomplete';
-        window.app_view.nav_view.selectNav(tag, subset);
-
-        switch (subset) {
-            case 'overdue':
-                window.app_view.showList({
-                    ddoc: 'kanso-tasks',
-                    name: 'incomplete_by_tag_due_and_priority',
-                    query: { startkey: [tag], endkey: [tag, today] }
-                },
-                // comparator
-                function (task) {
-                    return [
-                        task.get('due') || {},
-                        task.get('priority') || 4
-                    ];
-                });
-                break;
-            case 'today':
-                window.app_view.showList({
-                    ddoc: 'kanso-tasks',
-                    name: 'incomplete_by_tag_due_and_priority',
-                    query: { startkey: [tag, today], endkey: [tag, tomorrow] }
-                },
-                // comparator
-                function (task) {
-                    return [
-                        task.get('due') || {},
-                        task.get('priority') || 4
-                    ];
-                });
-                break;
-            case 'week':
-                window.app_view.showList({
-                    ddoc: 'kanso-tasks',
-                    name: 'incomplete_by_tag_due_and_priority',
-                    query: { startkey: [tag, today], endkey: [tag, next_week] }
-                },
-                // comparator
-                function (task) {
-                    return [
-                        task.get('due') || {},
-                        task.get('priority') || 4
-                    ];
-                });
-                break;
-            case 'complete':
-                window.app_view.showList({
-                    ddoc: 'kanso-tasks',
-                    name: 'complete_by_tag_and_completed_at',
-                    query: { startkey: [tag], endkey: [tag, {}] }
-                },
-                // comparator
-                function (task) {
-                    return task.get('completed_at') || {};
-                });
-                break;
-            default:
-                // incomplete
-                window.app_view.showList({
-                    ddoc: 'kanso-tasks',
-                    name: 'incomplete_by_tag_priority_and_due',
-                    query: { startkey: [tag], endkey: [tag, {}] }
-                },
-                // comparator
-                function (task) {
-                    console.log('incomplete comparator called');
-                    return [
-                        task.get('priority') || 4,
-                        task.get('due') || {}
-                    ];
-                });
-                break;
-        }
+        var tasks = new TaskList(
+            {
+                ddoc: 'kanso-tasks',
+                name: 'incomplete_by_tag_due_and_priority',
+                query: { startkey: [tag, today], endkey: [tag, next_week] }
+            },
+            // comparator
+            function (task) {
+                return [
+                    task.get('due') || {},
+                    task.get('priority') || 4
+                ];
+            }
+        );
+        window.app_view.nav_view.selectNav(tag, 'week');
+        window.app_view.showTaskList(tasks);
+    },
+    listComplete: function (tag) {
+        tag = tag || null;
+        var tasks = new TaskList(
+            {
+                ddoc: 'kanso-tasks',
+                name: 'complete_by_tag_and_completed_at',
+                query: { startkey: [tag], endkey: [tag, {}] }
+            },
+            // comparator
+            function (task) {
+                return task.get('completed_at') || {};
+            }
+        );
+        window.app_view.nav_view.selectNav(tag, 'complete');
+        window.app_view.showTaskList(tasks);
     }
 });

@@ -1,7 +1,6 @@
 var Backbone = require('backbone'),
     templates = require('handlebars').templates,
     NavigationView = require('./navigation').NavigationView,
-    TaskList = require('../collections/tasklist').TaskList,
     ListView = require('./list').ListView;
 
 
@@ -16,8 +15,7 @@ exports.AppView = Backbone.View.extend({
         $(this.el).html(this.template({}));
         return this;
     },
-    showList: function (view, comparator) {
-        var tasks = new TaskList(view, comparator);
+    showTaskList: function (tasks) {
         this.list_view = new ListView(tasks);
         this.$('#main').html(this.list_view.render().el);
     }
