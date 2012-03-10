@@ -32,6 +32,13 @@ exports.WorkspaceRouter = Backbone.Router.extend({
                     ddoc: 'kanso-tasks',
                     name: 'incomplete_by_tag_due_and_priority',
                     query: { startkey: [tag], endkey: [tag, today] }
+                },
+                // comparator
+                function (task) {
+                    return [
+                        task.get('due') || {},
+                        task.get('priority') || 4
+                    ];
                 });
                 break;
             case 'today':
@@ -39,6 +46,13 @@ exports.WorkspaceRouter = Backbone.Router.extend({
                     ddoc: 'kanso-tasks',
                     name: 'incomplete_by_tag_due_and_priority',
                     query: { startkey: [tag, today], endkey: [tag, tomorrow] }
+                },
+                // comparator
+                function (task) {
+                    return [
+                        task.get('due') || {},
+                        task.get('priority') || 4
+                    ];
                 });
                 break;
             case 'week':
@@ -46,6 +60,13 @@ exports.WorkspaceRouter = Backbone.Router.extend({
                     ddoc: 'kanso-tasks',
                     name: 'incomplete_by_tag_due_and_priority',
                     query: { startkey: [tag, today], endkey: [tag, next_week] }
+                },
+                // comparator
+                function (task) {
+                    return [
+                        task.get('due') || {},
+                        task.get('priority') || 4
+                    ];
                 });
                 break;
             case 'complete':
@@ -53,6 +74,10 @@ exports.WorkspaceRouter = Backbone.Router.extend({
                     ddoc: 'kanso-tasks',
                     name: 'complete_by_tag_and_completed_at',
                     query: { startkey: [tag], endkey: [tag, {}] }
+                },
+                // comparator
+                function (task) {
+                    return task.get('completed_at') || {};
                 });
                 break;
             default:
@@ -61,6 +86,14 @@ exports.WorkspaceRouter = Backbone.Router.extend({
                     ddoc: 'kanso-tasks',
                     name: 'incomplete_by_tag_priority_and_due',
                     query: { startkey: [tag], endkey: [tag, {}] }
+                },
+                // comparator
+                function (task) {
+                    console.log('incomplete comparator called');
+                    return [
+                        task.get('priority') || 4,
+                        task.get('due') || {}
+                    ];
                 });
                 break;
         }

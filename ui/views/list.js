@@ -1,6 +1,5 @@
 var Backbone = require('backbone'),
     templates = require('handlebars').templates,
-    TaskList = require('../collections/tasklist').TaskList,
     TaskView = require('./task').TaskView,
     utils = require('../utils'),
     _ = require('underscore');
@@ -23,11 +22,11 @@ exports.ListView = Backbone.View.extend({
         'mouseover .controls':          'overControls',
         'mouseout  .controls':          'outControls'
     },
-    initialize: function (view) {
+    initialize: function (tasks) {
         $(this.el).html(this.template({}));
         this.input = this.$('#new-task');
 
-        this.tasks = new TaskList(view);
+        this.tasks = tasks;
         this.tasks.bind('add',    this.addOne,         this);
         this.tasks.bind('change', this.checkSelection, this);
         this.tasks.bind('reset',  this.addAll,         this);
@@ -98,7 +97,20 @@ exports.ListView = Backbone.View.extend({
     },
     addOne: function (task) {
         var view = new TaskView({model: task});
-        this.$('.task-table tbody').append(view.render().el);
+        var i = this.tasks.indexOf(task);
+        var tbody = this.$('.task-table tbody');
+        var tr = view.render().el;
+
+        if (i === -1) {
+            // TODO: throw error?
+            tbody.append(tr);
+        }
+        else if(i === 0) {
+            tbody.prepend(tr);
+        }
+        else {
+            $("tr:nth-child(" + i + ")", tbody).after(tr);
+        }
     },
     addAll: function () {
         this.tasks.each(_.bind(this.addOne, this));
