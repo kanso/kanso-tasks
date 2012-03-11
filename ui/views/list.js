@@ -105,7 +105,7 @@ exports.ListView = Backbone.View.extend({
         var removing = _.reject(this.tasks.models, this.tasks.shouldInclude);
         _.each(removing, function (task) {
             that.$('tr[rel="' + task.get('_id') + '"]').fadeOut(function () {
-                this.remove();
+                $(this).remove();
             });
         });
         this.tasks.remove(removing);
@@ -301,6 +301,9 @@ exports.ListView = Backbone.View.extend({
                 if (this.tasks.shouldInclude(task)) {
                     this.tasks.add(task);
                 }
+                task.on('sync', function () {
+                    window.app_view.nav_view.update();
+                });
                 this.input.val('');
                 this.prev_text = null;
                 this.hideTip();

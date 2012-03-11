@@ -152,6 +152,30 @@ exports.NavigationView = Backbone.View.extend({
     updateTags: function (names) {
         _.each(names, this.addTag, this);
     },
+    updateTagCount: function (tag, counts) {
+        for (var i = 0; i < this.tags.length; i++) {
+            if (this.tags[i].tag === tag) {
+                this.tags[i].count = counts.incomplete;
+                this.tags[i].children[0].count = counts.incomplete;
+                this.tags[i].children[1].count = counts.overdue;
+                this.tags[i].children[2].count = counts.today;
+                this.tags[i].children[3].count = counts.week;
+                this.tags[i].children[4].count = counts.complete;
+            }
+        }
+    },
+    updateCounts: function (counts) {
+        this.main[0].count = counts.incomplete;
+        this.main[0].children[0].count = counts.incomplete;
+        this.main[0].children[1].count = counts.overdue;
+        this.main[0].children[2].count = counts.today;
+        this.main[0].children[3].count = counts.week;
+        this.main[0].children[4].count = counts.complete;
+
+        for (var t in counts.tags) {
+            this.updateTagCount(t, counts.tags[t]);
+        }
+    },
     update: function () {
         var that = this;
         var q = {
@@ -175,6 +199,7 @@ exports.NavigationView = Backbone.View.extend({
                 }
             });
             that.updateTags(_.keys(counts.tags));
+            that.updateCounts(counts);
             that.render();
         });
     }

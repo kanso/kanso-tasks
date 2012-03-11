@@ -59,6 +59,8 @@ exports.nav_info = {
         // subset counts
         if (doc.complete) {
             emitCount('complete');
+            // don't include completed tasks in other counts
+            return;
         }
         else {
             emitCount('incomplete');

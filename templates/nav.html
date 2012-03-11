@@ -2,12 +2,12 @@
   <li class="nav-header">Overview</li>
   {{#each main}}
   <li class="{{#if active}}active{{else}}collapsed{{/if}}">
-    <a href="{{href}}"><i class="{{#if active}}icon-white {{/if}}icon-{{#if icon}}{{icon}}{{else}}empty{{/if}}"></i> {{text}}</a>
+  <a href="{{href}}"><i class="{{#if active}}icon-white {{/if}}icon-{{#if icon}}{{icon}}{{else}}empty{{/if}}"></i> {{text}} <span class="count">{{count}}</span></a>
     {{#if children}}
     <ul>
       {{#each children}}
       <li class="{{#if active}}active{{else}}collapsed{{/if}}">
-        <a href="{{href}}"><i class="icon-{{#if active}}chevron-right{{else}}empty{{/if}}"></i> {{text}}</a>
+        <a href="{{href}}"><i class="icon-{{#if active}}chevron-right{{else}}empty{{/if}}"></i> {{text}} <span class="count">{{count}}</span></a>
       </li>
       {{/each}}
     </ul>
@@ -19,12 +19,12 @@
   {{/if}}
   {{#each tags}}
   <li class="{{#if active}}active{{else}}collapsed{{/if}}">
-    <a href="{{href}}"><i class="icon-tag"></i> {{text}}</a>
+    <a href="{{href}}"><i class="icon-tag"></i> {{text}} <span class="count">{{count}}</span></a>
     {{#if children}}
     <ul>
       {{#each children}}
       <li class="{{#if active}}active{{else}}collapsed{{/if}}">
-        <a href="{{href}}"><i class="icon-{{#if active}}chevron-right{{else}}empty{{/if}}"></i> {{text}}</a>
+        <a href="{{href}}"><i class="icon-{{#if active}}chevron-right{{else}}empty{{/if}}"></i> {{text}} <span class="count">{{count}}</span></a>
       </li>
       {{/each}}
     </ul>
