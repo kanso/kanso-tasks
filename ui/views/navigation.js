@@ -155,22 +155,22 @@ exports.NavigationView = Backbone.View.extend({
     updateTagCount: function (tag, counts) {
         for (var i = 0; i < this.tags.length; i++) {
             if (this.tags[i].tag === tag) {
-                this.tags[i].count = counts.incomplete;
-                this.tags[i].children[0].count = counts.incomplete;
-                this.tags[i].children[1].count = counts.overdue;
-                this.tags[i].children[2].count = counts.today;
-                this.tags[i].children[3].count = counts.week;
-                this.tags[i].children[4].count = counts.complete;
+                this.tags[i].count = counts.incomplete || 0;
+                this.tags[i].children[0].count = counts.incomplete || 0;
+                this.tags[i].children[1].count = counts.overdue || 0;
+                this.tags[i].children[2].count = counts.today || 0;
+                this.tags[i].children[3].count = counts.week || 0;
+                this.tags[i].children[4].count = counts.complete || 0;
             }
         }
     },
     updateCounts: function (counts) {
-        this.main[0].count = counts.incomplete;
-        this.main[0].children[0].count = counts.incomplete;
-        this.main[0].children[1].count = counts.overdue;
-        this.main[0].children[2].count = counts.today;
-        this.main[0].children[3].count = counts.week;
-        this.main[0].children[4].count = counts.complete;
+        this.main[0].count = counts.incomplete || 0;
+        this.main[0].children[0].count = counts.incomplete || 0;
+        this.main[0].children[1].count = counts.overdue || 0;
+        this.main[0].children[2].count = counts.today || 0;
+        this.main[0].children[3].count = counts.week || 0;
+        this.main[0].children[4].count = counts.complete || 0;
 
         for (var t in counts.tags) {
             this.updateTagCount(t, counts.tags[t]);
