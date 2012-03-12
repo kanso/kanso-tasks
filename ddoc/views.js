@@ -46,24 +46,26 @@ exports.nav_info = {
             return;
         }
 
-        function emitCount(subset) {
-            emit([null, subset], 1);
-            for (var i = 0, len = doc.tags.length; i < len; i++) {
-                emit([doc.tags[i], subset], 1);
-            }
-        }
-
         // for top-level counts for each tag (or all)
-        emitCount('all');
+        emit([null, 'all'], 1);
+        for (var i = 0, len = doc.tags.length; i < len; i++) {
+            emit([doc.tags[i], 'all'], 1);
+        }
 
         // subset counts
         if (doc.complete) {
-            emitCount('complete');
+            emit([null, 'complete'], 1);
+            for (var i = 0, len = doc.tags.length; i < len; i++) {
+                emit([doc.tags[i], 'complete'], 1);
+            }
             // don't include completed tasks in other counts
             return;
         }
         else {
-            emitCount('incomplete');
+            emit([null, 'incomplete'], 1);
+            for (var i = 0, len = doc.tags.length; i < len; i++) {
+                emit([doc.tags[i], 'incomplete'], 1);
+            }
         }
 
         var t = Date.today();
@@ -72,13 +74,22 @@ exports.nav_info = {
         var next_week = t.clone().add({weeks: 1}).toISOString();
 
         if (doc.due < today) {
-            emitCount('overdue');
+            emit([null, 'overdue'], 1);
+            for (var i = 0, len = doc.tags.length; i < len; i++) {
+                emit([doc.tags[i], 'overdue'], 1);
+            }
         }
         if (doc.due >= today && doc.due < tomorrow) {
-            emitCount('today');
+            emit([null, 'today'], 1);
+            for (var i = 0, len = doc.tags.length; i < len; i++) {
+                emit([doc.tags[i], 'today'], 1);
+            }
         }
         if (doc.due >= today && doc.due < next_week) {
-            emitCount('week');
+            emit([null, 'week'], 1);
+            for (var i = 0, len = doc.tags.length; i < len; i++) {
+                emit([doc.tags[i], 'week'], 1);
+            }
         }
     },
     reduce: function (keys, values, rereduce) {
