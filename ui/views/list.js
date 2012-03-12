@@ -21,7 +21,8 @@ exports.ListView = Backbone.View.extend({
         'click     .complete-btn':      'completeSelected',
         'click     .postpone-btn':      'postponeSelected',
         'mouseover .controls':          'overControls',
-        'mouseout  .controls':          'outControls'
+        'mouseout  .controls':          'outControls',
+        'click     .edit-btn':          'showEditModal'
     },
     initialize: function (tasks) {
         $(this.el).html(this.template({}));
@@ -374,5 +375,14 @@ exports.ListView = Backbone.View.extend({
                 }
             }, 400);
         }
+    },
+    showEditModal: function () {
+        if (this.modal) {
+            this.modal.remove();
+            this.modal = null;
+        }
+        this.modal = $(templates['edit.html']({})).modal({
+            backdrop: false
+        });
     }
 });
