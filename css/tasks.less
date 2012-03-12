@@ -71,7 +71,7 @@
     display: block;
     list-style: none;
     margin: 0 -15px 0 -14px;
-    padding: 14px 14px 14px 30px;
+    padding: 14px 14px 14px 14px;
     background: #fcfcfc;
     border-right: 1px solid #f3f3f3;
     border-bottom: 1px solid #eee;
@@ -309,15 +309,26 @@ input {
 }
 
 #sidebar .nav li a .count {
-    text-align: right;
-    min-width: 20px;
-    padding: 0px 5px;
+    padding: 0px 9px;
     float: right;
     color: #777;
+    border-radius: 7px;
+    background: white;
+    border: 1px solid #e6e6e6;
+    text-shadow: none;
+    font-size: 80%;
+    font-weight: bold;
+    position: relative;
+    bottom: 1px;
 }
 #sidebar .nav li ul li a .count {
-    color: #aaa;
+    color: #bbb;
+    background: none;
 }
 #sidebar li.active>a>.count {
-    color: white;
+    text-shadow: none;
+}
+#sidebar .nav li ul li.active a .count,
+#sidebar .nav li ul li:hover a .count {
+    color: #666;
 }
