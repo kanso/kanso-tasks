@@ -17,6 +17,10 @@ exports.Task = Backbone.Model.extend({
             tags: []
         };
     },
+    validate: function () {
+        // TODO
+        return null;
+    },
     toggle: function () {
         this.save({complete: !this.get("complete")})
     },

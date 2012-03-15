@@ -1,5 +1,6 @@
 var Backbone = require('backbone'),
-    TaskList = require('./collections/tasklist').TaskList;
+    TaskList = require('./collections/tasklist').TaskList,
+    _ = require('underscore');
 
 
 exports.WorkspaceRouter = Backbone.Router.extend({
@@ -62,7 +63,7 @@ exports.WorkspaceRouter = Backbone.Router.extend({
             shouldInclude: function (task) {
                 return !task.get('complete') &&
                        (!tag || _.include(task.get('tags'), tag)) &&
-                       task.get('due') < today
+                       (task.get('due') && task.get('due') < today)
             }
         });
         window.app_view.nav_view.selectNav(tag, 'overdue');
@@ -88,6 +89,7 @@ exports.WorkspaceRouter = Backbone.Router.extend({
             shouldInclude: function (task) {
                 return !task.get('complete') &&
                        (!tag || _.include(task.get('tags'), tag)) &&
+                       task.get('due') &&
                        task.get('due') >= today && task.get('due') < tomorrow
             }
         });
@@ -114,6 +116,7 @@ exports.WorkspaceRouter = Backbone.Router.extend({
             shouldInclude: function (task) {
                 return !task.get('complete') &&
                        (!tag || _.include(task.get('tags'), tag)) &&
+                       task.get('due') &&
                        task.get('due') >= today && task.get('due') < next_week
             }
         });
@@ -132,7 +135,8 @@ exports.WorkspaceRouter = Backbone.Router.extend({
                 return task.get('completed_at') || {};
             },
             shouldInclude: function (task) {
-                return task.complete && (!tag || _.include(task.tags, tag));
+                return task.get('complete') &&
+                       (!tag || _.include(task.get('tags'), tag));
             }
         });
         window.app_view.nav_view.selectNav(tag, 'complete');

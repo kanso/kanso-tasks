@@ -1,13 +1,57 @@
 <div class="modal">
   <div class="modal-header">
     <a href="#" class="close" data-dismiss="modal">×</a>
-    <h3>Modal header</h3>
+    <h3>Edit task</h3>
   </div>
   <div class="modal-body">
-    <p>One fine body…</p>
+    {{#with task}}
+    <form class="form-horizontal" action="" method="POST">
+      <div class="control-group">
+        <label class="control-label" for="edit_priority">Priority</label>
+        <div class="controls">
+          <select class="span1" name="priority" id="edit_priority">
+            <option value="1"{{#ifequal priority 1}} selected="selected"{{/ifequal}}>1</option>
+            <option value="2"{{#ifequal priority 2}} selected="selected"{{/ifequal}}>2</option>
+            <option value="3"{{#ifequal priority 3}} selected="selected"{{/ifequal}}>3</option>
+            <option value=""{{#unless priority}} selected="selected"{{/unless}}>None</option>
+          </select>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="edit_description">Description</label>
+        <div class="controls">
+          <input type="text" id="edit_description" name="description" value="{{description}}" />
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="edit_tags">Tags</label>
+        <div class="controls">
+          <input type="text" id="edit_tags" name="tags" value="{{../tags_pp}}" />
+          <p class="help-block">Comma-separated list of tags</p>
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="edit_due">Due</label>
+        <div class="controls">
+          <input type="text" class="span2" id="edit_due" name="due" value="{{../due_pp}}" />
+        </div>
+      </div>
+      <div class="control-group">
+        <label class="control-label" for="edit_complete">Complete</label>
+        <div class="controls">
+          <input type="checkbox" name="complete" id="edit_complete" {{#if complete}}checked="checked"{{/if}} />
+        </div>
+      </div>
+    </form>
+    {{/with}}
   </div>
   <div class="modal-footer">
-    <a href="#" class="btn btn-primary">Save changes</a>
-    <a href="#" class="btn">Close</a>
+    <div class="button-group pull-left">
+      <a href="#" class="btn btn-danger">Delete</a>
+    </div>
+    <div class="button-group pull-right">
+      <a href="#" class="btn btn-primary">Save changes</a>
+      <a href="#" class="btn btn-close">Close</a>
+    </div>
   </div>
 </div>

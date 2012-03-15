@@ -2,7 +2,7 @@
   <li class="nav-header">Overview</li>
   {{#each main}}
   <li class="{{#if active}}active{{else}}collapsed{{/if}}">
-  <a href="{{href}}"><i class="{{#if active}}icon-white {{/if}}icon-{{#if icon}}{{icon}}{{else}}empty{{/if}}"></i> {{text}} <span class="count">{{count}}</span></a>
+  <a href="{{href}}"><i class="{{#if active}}icon-white {{/if}}icon-{{#if icon}}{{icon}}{{else}}empty{{/if}}"></i> {{text}}{{#if count}} <span class="count">{{count}}</span>{{/if}}</a>
     {{#if children}}
     <ul>
       {{#each children}}

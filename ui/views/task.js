@@ -65,6 +65,10 @@ exports.TaskView = Backbone.View.extend({
 
         $(el).attr({rel: this.model.get('_id')});
 
+        $(el).removeClass('priority1');
+        $(el).removeClass('priority2');
+        $(el).removeClass('priority3');
+
         if (this.model.get('priority')) {
             $(el).addClass('priority' + this.model.get('priority'));
         }

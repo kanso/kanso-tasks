@@ -45,17 +45,16 @@ exports.save = function (db, model, callback) {
         }
         model.attributes._id = resp.id;
         model.attributes._rev = resp.rev;
-        callback(null, model);
+        callback(null, model.attributes);
     });
 };
 
 exports.remove = function (db, model, callback) {
-    db.removeDoc(model.attributes, function (err) {
-        callback(err, model);
-    });
+    db.removeDoc(model.attributes, callback);
 };
 
 exports.sync = function (method, model, options) {
+    console.log(['backbone-adapter.sync', method, model, options]);
     var db_url = model.db;
     if (!db_url && model.collection) {
         // try collection db url
@@ -67,9 +66,10 @@ exports.sync = function (method, model, options) {
     }
     var callback = function (err) {
         if (err) {
-            return options.error(err);
+            return options.error(model, err);
         }
         var args = Array.prototype.slice.call(arguments, 1);
+        console.log(['backbone-adapter.callback'].concat(args));
         options.success.apply(model, args);
     };
     if (!db_url) {

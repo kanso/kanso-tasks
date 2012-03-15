@@ -8,45 +8,59 @@ exports.NavigationView = Backbone.View.extend({
     id: 'navigation',
     tagName: 'div',
     template: templates['nav.html'],
-    main: [{
-        text: 'All tasks',
-        tag: null,
-        href: '#all/incomplete',
-        icon: 'asterisk',
-        active: true,
-        children: [
-            {
-                text: 'Incomplete',
-                subset: 'incomplete',
-                href: '#all/incomplete',
-                active: true
-            },
-            {
-                text: 'Overdue',
-                subset: 'overdue',
-                href: '#all/overdue',
-                active: false
-            },
-            {
-                text: 'Due today',
-                subset: 'today',
-                href: '#all/today',
-                active: false
-            },
-            {
-                text: 'Due 7 days',
-                subset: 'week',
-                href: '#all/week',
-                active: false
-            },
-            {
-                text: 'Complete',
-                subset: 'complete',
-                href: '#all/complete',
-                active: false
-            }
-        ]
-    }],
+    main: [
+        {
+            text: 'All tasks',
+            tag: null,
+            href: '#all/incomplete',
+            icon: 'asterisk',
+            active: true,
+            children: [
+                {
+                    text: 'Incomplete',
+                    subset: 'incomplete',
+                    href: '#all/incomplete',
+                    active: true
+                },
+                {
+                    text: 'Overdue',
+                    subset: 'overdue',
+                    href: '#all/overdue',
+                    active: false
+                },
+                {
+                    text: 'Due today',
+                    subset: 'today',
+                    href: '#all/today',
+                    active: false
+                },
+                {
+                    text: 'Due 7 days',
+                    subset: 'week',
+                    href: '#all/week',
+                    active: false
+                },
+                {
+                    text: 'Complete',
+                    subset: 'complete',
+                    href: '#all/complete',
+                    active: false
+                }
+            ]
+        }/*,
+        {
+            text: 'Stats',
+            href: '#stats',
+            icon: 'signal',
+            active: false,
+        },
+        {
+            text: 'Help',
+            href: '#help',
+            icon: 'book',
+            active: false,
+        }*/
+    ],
     tags: [],
     initialize: function () {
         this.el = $('#sidebar');

@@ -3,7 +3,7 @@
     "description": "Todo List CouchApp",
     "version": "0.0.1",
     "load": "ddoc/ddoc",
-    "attachments": ["index.html", "vendor"],
+    "attachments": ["index.html", "vendor", "img"],
     "modules": ["ddoc", "ui", "views"],
     "handlebars": {
         "templates": "templates"

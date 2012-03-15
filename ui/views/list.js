@@ -29,11 +29,12 @@ exports.ListView = Backbone.View.extend({
         this.input = this.$('#new-task');
 
         this.tasks = tasks;
-        this.tasks.bind('add',    this.addOne,  this);
-        this.tasks.bind('change', this.change,  this);
-        this.tasks.bind('reset',  this.addAll,  this);
-        this.tasks.bind('all',    this.render,  this);
-        this.tasks.bind('error',  this.error,   this);
+        this.tasks.on('add',    this.addOne,  this);
+        this.tasks.on('change', this.change,  this);
+        this.tasks.on('sync',   this.change,  this);
+        this.tasks.on('reset',  this.reset,   this);
+        this.tasks.on('all',    this.render,  this);
+        this.tasks.on('error',  this.error,   this);
         this.tasks.fetch();
 
         this.checkSelection();
@@ -98,8 +99,11 @@ exports.ListView = Backbone.View.extend({
         return this;
     },
     change: function () {
-        this.checkSelection();
+        console.log('change');
+        this.tasks.sort();
         this.pruneTasks();
+        this.checkSelection();
+        window.app_view.nav_view.update();
     },
     pruneTasks: function () {
         var that = this;
@@ -128,8 +132,11 @@ exports.ListView = Backbone.View.extend({
             $("tr:nth-child(" + i + ")", tbody).after(tr);
         }
     },
-    addAll: function () {
+    reset: function () {
+        console.log('reset');
+        this.$('.task-table tbody').html('');
         this.tasks.each(_.bind(this.addOne, this));
+        window.app_view.nav_view.update();
     },
     error: function (err) {
         console.error(err);
@@ -302,9 +309,6 @@ exports.ListView = Backbone.View.extend({
                 if (this.tasks.shouldInclude(task)) {
                     this.tasks.add(task);
                 }
-                task.on('sync', function () {
-                    window.app_view.nav_view.update();
-                });
                 this.input.val('');
                 this.prev_text = null;
                 this.hideTip();
@@ -330,8 +334,17 @@ exports.ListView = Backbone.View.extend({
         this.$('.task-table tr.selected').each(function () {
             var id = $(this).attr('rel');
             var task = that.tasks.get(id);
-            task.set('complete', true);
-            task.save();
+            task.set({complete: true}, {silent: true});
+            task.save(null, {
+                wait: true,
+                success: function () {
+                    // ?
+                },
+                error: function (err) {
+                    // TODO: show error message and reset complete attribute
+                    console.error(['Error saving completed task', err]);
+                }
+            });
         });
         return false;
     },
@@ -376,13 +389,101 @@ exports.ListView = Backbone.View.extend({
             }, 400);
         }
     },
-    showEditModal: function () {
+    showEditModal: function (ev) {
+        ev.preventDefault();
         if (this.modal) {
-            this.modal.remove();
+            this.modal.modal('hide').data('modal', null).remove();
             this.modal = null;
         }
-        this.modal = $(templates['edit.html']({})).modal({
+        var selected = this.$('.task-table tr.selected');
+        if (selected.length !== 1) {
+            return false;
+        }
+        var task = this.tasks.get(selected.attr('rel'));
+
+        var due = task.get('due');
+        this.modal = $(templates['edit.html']({
+            task: task.attributes,
+            tags_pp: task.get('tags').join(', '),
+            due_pp: due ? (new Date(due)).toString('yyyy-MM-dd'): ''
+        }));
+        this.modal.modal({
             backdrop: false
         });
+        $('[name="due"]', this.modal).datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+        var that = this;
+        $('.btn-danger', this.modal).click(function () {
+            ev.preventDefault();
+            task.destroy({
+                wait: true,
+                success: function (model, response) {
+                    that.modal.modal('hide');
+                },
+                error: function (model, response) {
+                    // TODO: show error message
+                }
+            });
+            return false;
+        });
+        $('.btn-close', this.modal).click(function (ev) {
+            ev.preventDefault();
+            that.modal.modal('hide');
+            return false;
+        });
+        function submitHandler(ev) {
+            ev.preventDefault();
+            var props = {
+                priority:    $('[name="priority"]', that.modal).val(),
+                description: $('[name="description"]', that.modal).val(),
+                tags:        $('[name="tags"]', that.modal).val(),
+                due:         $('[name="due"]', that.modal).val(),
+                complete:    $('[name="complete"]', that.modal).is(':checked')
+            };
+
+            props.tags = props.tags ? props.tags.split(','): [];
+            props.tags = _.compact(_.map(props.tags, function (t) {
+                t = t.replace(/^\s+/, '').replace(/\s+$/, '');
+                return t || null;
+            }));
+
+            if (props.priority) {
+                props.priority = parseInt(props.priority, 10);
+                if (isNaN(props.priority)) {
+                    // TODO
+                }
+            }
+            else {
+                props.priority = null;
+            }
+
+            // TODO: validation
+
+            task.set(props, {silent: true});
+
+            task.save(null, {
+                wait: true,
+                success: function (model, response) {
+                    that.modal.modal('hide');
+                },
+                error: function (model, response) {
+                    // TODO: show error message
+                    console.log(['task.save error', model, response]);
+                }
+            });
+            return false;
+        }
+        $('.btn-primary', this.modal).click(submitHandler);
+
+        // have to fake form-submits inside modals because boostrap eats up
+        // the submit event
+        $('input', this.modal).keyup(function (ev) {
+            if (ev.keyCode === 13) {
+                submitHandler(ev);
+            }
+        });
+
+        return false;
     }
 });
