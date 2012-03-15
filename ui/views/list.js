@@ -99,7 +99,6 @@ exports.ListView = Backbone.View.extend({
         return this;
     },
     change: function () {
-        console.log('change');
         this.tasks.sort();
         this.pruneTasks();
         this.checkSelection();
@@ -133,7 +132,6 @@ exports.ListView = Backbone.View.extend({
         }
     },
     reset: function () {
-        console.log('reset');
         this.$('.task-table tbody').html('');
         this.tasks.each(_.bind(this.addOne, this));
         window.app_view.nav_view.update();

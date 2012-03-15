@@ -36,9 +36,6 @@ exports.findAll = function (db, model, callback) {
 };
 
 exports.save = function (db, model, callback) {
-    if (!model.attributes.type) {
-        return callback(new Error('No type property defined'));
-    }
     db.saveDoc(model.attributes, function (err, resp) {
         if (err) {
             return callback(err);
@@ -54,7 +51,6 @@ exports.remove = function (db, model, callback) {
 };
 
 exports.sync = function (method, model, options) {
-    console.log(['backbone-adapter.sync', method, model, options]);
     var db_url = model.db;
     if (!db_url && model.collection) {
         // try collection db url
@@ -69,7 +65,6 @@ exports.sync = function (method, model, options) {
             return options.error(model, err);
         }
         var args = Array.prototype.slice.call(arguments, 1);
-        console.log(['backbone-adapter.callback'].concat(args));
         options.success.apply(model, args);
     };
     if (!db_url) {
