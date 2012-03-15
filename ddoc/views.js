@@ -73,22 +73,24 @@ exports.nav_info = {
         var tomorrow = t.clone().add({days: 1}).toISOString();
         var next_week = t.clone().add({weeks: 1}).toISOString();
 
-        if (doc.due < today) {
-            emit([null, 'overdue'], 1);
-            for (var i = 0, len = doc.tags.length; i < len; i++) {
-                emit([doc.tags[i], 'overdue'], 1);
+        if (doc.due) {
+            if (doc.due < today) {
+                emit([null, 'overdue'], 1);
+                for (var i = 0, len = doc.tags.length; i < len; i++) {
+                    emit([doc.tags[i], 'overdue'], 1);
+                }
             }
-        }
-        if (doc.due >= today && doc.due < tomorrow) {
-            emit([null, 'today'], 1);
-            for (var i = 0, len = doc.tags.length; i < len; i++) {
-                emit([doc.tags[i], 'today'], 1);
+            if (doc.due >= today && doc.due < tomorrow) {
+                emit([null, 'today'], 1);
+                for (var i = 0, len = doc.tags.length; i < len; i++) {
+                    emit([doc.tags[i], 'today'], 1);
+                }
             }
-        }
-        if (doc.due >= today && doc.due < next_week) {
-            emit([null, 'week'], 1);
-            for (var i = 0, len = doc.tags.length; i < len; i++) {
-                emit([doc.tags[i], 'week'], 1);
+            if (doc.due >= today && doc.due < next_week) {
+                emit([null, 'week'], 1);
+                for (var i = 0, len = doc.tags.length; i < len; i++) {
+                    emit([doc.tags[i], 'week'], 1);
+                }
             }
         }
     },
