@@ -3,7 +3,7 @@
     "description": "Todo List CouchApp",
     "version": "0.0.1",
     "load": "ddoc/ddoc",
-    "attachments": ["index.html", "vendor", "img"],
+    "attachments": ["index.html", "vendor", "img", "css/chosen.css", "css/chosen-sprite.png"],
     "modules": ["ddoc", "ui", "views"],
     "handlebars": {
         "templates": "templates"
@@ -19,7 +19,6 @@
         "attachments": null,
         "modules": null,
         "properties": null,
-        "kanso-topbar": null,
         "bootstrap-less": null,
         "less-precompiler": null,
         "session": null

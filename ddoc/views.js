@@ -98,3 +98,14 @@ exports.nav_info = {
         return sum(values);
     }
 };
+
+/**
+ * This should be provided by garden-tags module. Replace when available
+ */
+exports.all_tags = {
+    map : function(doc) {
+        if (doc.type && doc.type == 'garden.tag') {
+            emit(doc.hash, null);
+        }
+    }
+}

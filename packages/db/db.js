@@ -397,7 +397,7 @@ function DB(url) {
 // TODO: handle full urls, not just db names
 exports.use = function (url) {
     /* Force leading slash; make absolute path */
-    return new DB((url.substr(0, 1) !== '/' ? '/' : '') + url);
+    return new DB(url);
 };
 
 /**

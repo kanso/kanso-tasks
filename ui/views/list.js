@@ -3,6 +3,7 @@ var Backbone = require('backbone'),
     TaskView = require('./task').TaskView,
     Task = require('../models/task').Task,
     utils = require('../utils'),
+    db = require('db').use('api');
     _ = require('underscore');
 
 
@@ -400,13 +401,24 @@ exports.ListView = Backbone.View.extend({
         var task = this.tasks.get(selected.attr('rel'));
 
         var due = task.get('due');
+        var tags = task.get('tags');
         this.modal = $(templates['edit.html']({
             task: task.attributes,
-            tags_pp: task.get('tags').join(', '),
             due_pp: due ? (new Date(due)).toString('yyyy-MM-dd'): ''
         }));
         this.modal.modal({
             backdrop: false
+        });
+        // get the tags
+        db.getView('kanso-tasks', 'all_tags', function(err, result) {
+            _.each(result.rows, function(row) {
+                var option = $('<option>'+ row.key +'</option>');
+                if (_.contains(tags, row.key)) {
+                    option.attr('selected', 'selected');
+                }
+                $('#edit_tags').append(option);
+            });
+            $('#edit_tags').chosen({no_results_text: "No results matched"});
         });
         $('[name="due"]', this.modal).datepicker({
             dateFormat: 'yy-mm-dd'
@@ -440,11 +452,6 @@ exports.ListView = Backbone.View.extend({
                 complete:    $('[name="complete"]', that.modal).is(':checked')
             };
 
-            props.tags = props.tags ? props.tags.split(','): [];
-            props.tags = _.compact(_.map(props.tags, function (t) {
-                t = t.replace(/^\s+/, '').replace(/\s+$/, '');
-                return t || null;
-            }));
 
             if (props.priority) {
                 props.priority = parseInt(props.priority, 10);
