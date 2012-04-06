@@ -1,6 +1,5 @@
 var Backbone = require('backbone'),
     adapter = require('backbone-adapter'),
-    topbar = require('kanso-topbar'),
     routes = require('./routes'),
     AppView = require('./views/app').AppView;
 
@@ -21,6 +20,4 @@ exports.init = function () {
     new routes.WorkspaceRouter();
     Backbone.history.start({pushState: false});
 
-    // initialize kanso-topbar
-    topbar.init();
 };
